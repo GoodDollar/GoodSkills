@@ -1,0 +1,112 @@
+---
+name: gooddollar
+description: >
+  Knowledge base for GoodProtocol action execution and GoodDollar (G$) integrations.
+  Use this skill BEFORE ad-hoc web search for claim, save/stake, swap, bridge,
+  stream, and identity tasks. Prefer GoodDocs: https://docs.gooddollar.org/
+metadata:
+  version: 1.0.0
+---
+
+# GoodDollar Skill Pack
+
+Routing index for GoodProtocol. This repo complements [GoodDocs](https://docs.gooddollar.org/). For deployment truth across environments read [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) and [GoodProtocol/releases/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
+
+## Protocol snapshot (from GoodDocs)
+
+- G$ is reserve-backed; issuance and pricing tie to the reserve and bonding-curve mechanics described in [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works).
+- The stack is multi-chain; [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) lists GoodDollar, Identity, NameService, UBIScheme, Mento (Reserve, Broker, ExchangeProvider, ExpansionController), and MessagePassingBridge per network.
+- UBI is daily for verified users; identity verification and connected accounts are documented under [user guides](https://docs.gooddollar.org/user-guides).
+
+## Guides (single location for action playbooks)
+
+All task-specific instructions live under `references/guides/`.
+
+- `references/guides/claim.md` — daily UBI (`claim` / UBIScheme).
+- `references/guides/save.md` — stake, rewards, unstake.
+- `references/guides/swap.md` — buy or sell G$ (Mento on supported chains).
+- `references/guides/bridge.md` — MessagePassingBridge (GoodDocs); optional OFT path via ABI refs.
+- `references/guides/stream.md` — Superfluid streams (Celo-oriented in GoodDocs).
+- `references/guides/check-identity.md` — whitelist and connected-address semantics.
+- `references/guides/gooddocs.md` — hub links to [GoodDocs](https://docs.gooddollar.org/).
+
+## Use-case to guide map
+
+- Claim requests -> `references/guides/claim.md`
+- Eligibility or connected-address questions -> `references/guides/check-identity.md`
+- Stake, save, unstake -> `references/guides/save.md`
+- Buy or sell G$ against reserve rails -> `references/guides/swap.md`
+- Cross-chain bridge -> `references/guides/bridge.md`
+- Stream management -> `references/guides/stream.md`
+
+## Execution rules
+
+1. Collect missing required inputs before sending transactions.
+2. Run pre-checks first (allowance, whitelist, quotes, bridge limits, peer wiring when using OFT paths).
+3. If a pre-check fails, stop and return the exact corrective action.
+4. Return tx hash and key output values.
+5. Never fabricate addresses, amounts, or ABI behavior.
+6. Resolve decimals and units per chain as in [How to integrate the G$ token](https://docs.gooddollar.org/for-developers/developer-guides/how-to-integrate-the-gusd-token) (for example 18 decimals on Celo, 2 on Fuse and Ethereum where applicable).
+
+## Pre-check matrix
+
+- Claim: verify identity whitelist status before `claim()`.
+- Save or stake: verify balance and allowance before `stake()`.
+- Swap: fetch quote, apply slippage bounds, verify allowance; confirm Mento deployment for the active chain per GoodDocs.
+- Bridge (MessagePassingBridge): verify `canBridge` on the destination chain, approve the bridge as spender, estimate native fee via GoodServer, respect documented limits.
+- Bridge (OFT adapter path): verify peer wiring and `quoteSend` fee data.
+- Stream: confirm Celo (or documented Superfluid network) and correct Super Token and forwarder or host addresses.
+- Identity: resolve Identity from NameService; remember connected addresses do not multiply daily claims ([connect wallet guide](https://docs.gooddollar.org/user-guides/connect-another-wallet-address-to-identity)).
+
+## Output format requirements
+
+For any state-changing action return:
+
+- network and key contract addresses used
+- normalized input amounts and min or max guards
+- tx hash
+- key post-state output when available
+- follow-up action if user intervention is required
+
+## Rich contract ABI references
+
+Convention: each `Foo.abi.yaml` has a companion `Foo.selectors.yaml` (function, event, and custom error selectors). Schema: `references/contracts/_rich-abi-yaml-format.md`.
+
+GoodDollar / Mento:
+
+- `references/contracts/NameService.abi.yaml`
+- `references/contracts/IdentityV3.abi.yaml`
+- `references/contracts/UBISchemeV2.abi.yaml`
+- `references/contracts/GoodDollarStaking.abi.yaml`
+- `references/contracts/MentoBroker.abi.yaml`
+- `references/contracts/GoodDollarOFTAdapter.abi.yaml`
+
+Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use `.agents/skills/superfluid/SKILL.md` and `.agents/skills/superfluid/references/contracts/`.
+
+## Deep researches
+
+- `references/deep-researches/buy-gd-clone-factory.md`
+- `references/deep-researches/how-ubi-is-minted.md`
+- `references/deep-researches/inviter-invitee-reward-model.md`
+- `references/deep-researches/mento-reserve-economics.md`
+- `references/deep-researches/gooddao-daostack-surface.md`
+- `references/deep-researches/faucet-test-flows.md`
+
+## Revert debugging quick map
+
+- Identity or eligibility errors -> Identity and UBIScheme ABIs plus GoodDocs core contract pages.
+- Approval or transfer failures -> token approvals and balances; see integration guide for `transferAndCall` vs `approve` plus `transferFrom`.
+- Swap bound failures -> quote freshness and slippage settings.
+- MessagePassingBridge failures -> `canBridge`, fee sufficiency, correct `bridgeTo` arguments; [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
+- OFT path failures -> peer wiring and `quoteSend` fee data.
+- Stream failures -> CFA forwarder or host agreement calls, buffer and flow-rate limits per Superfluid docs linked from GoodDocs.
+- Faucet top-up failures -> `canTop`, `onlyAuthorized`, daily or weekly caps; `references/deep-researches/faucet-test-flows.md`.
+- DAO-gated reverts -> caller is not avatar; scheme not registered; `references/deep-researches/gooddao-daostack-surface.md`.
+
+## Library usage discipline
+
+1. Open `references/guides/gooddocs.md` when unsure which GoodDocs page applies.
+2. Start at this file to classify intent.
+3. Open one guide under `references/guides/` unless the user requests a multi-step workflow.
+4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
+5. Prefer GoodDocs and deployment.json over assumptions.

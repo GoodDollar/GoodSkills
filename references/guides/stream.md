@@ -1,27 +1,46 @@
 # Stream guide
 
-Authoritative GoodDocs entry: [Use G$ streaming](https://docs.gooddollar.org/for-developers/developer-guides/use-gusd-streaming).
+Primary references for stream execution are local ABI assets in this repo:
+
+- `references/contracts/CFAv1Forwarder.abi.yaml`
+- `references/contracts/ConstantFlowAgreementV1.abi.yaml`
+- `references/contracts/Superfluid.abi.yaml`
+- `references/contracts/SuperToken.abi.yaml`
 
 ## Goal
 
-Create, update, or delete Superfluid constant flows using the same primitives GoodDocs describes for production G$ on Celo.
+Create, update, or delete Superfluid constant flows using deterministic contract calls and local ABI references.
 
-## GoodDocs summary
+## Protocol facts used by this guide
 
-- G$ on Celo is a **pure Superfluid SuperToken** (no wrap step for streaming in the documented setup).
-- Simple streaming uses **CFAv1Forwarder** at `0xcfA132E353cB4E398080B9700609bb008eceB125` with `createFlow`, `updateFlow`, `deleteFlow`.
-- Production G$ on Celo in the guide: `0x62B8B11039FcfE5AB0C56E502b1C372A3d2a9c7A`. Development token and GoodWallet dev link appear in the same guide.
-- Flow-rate math, buffers, protocol fees on streamed drips, and network scope (streaming documented for Celo) are spelled out on that page.
+- Forwarder path uses `CFAv1Forwarder.createFlow`, `updateFlow`, `deleteFlow`.
+- Host path uses `Superfluid.callAgreement` with CFA calldata for `createFlow`, `updateFlow`, `deleteFlow`.
+- Stream token is a SuperToken; flow rates are `int96` in token-wei per second.
+- `getBufferAmountByFlowrate(token, flowRate)` is the canonical pre-check for required buffer.
 
 ## Two implementation styles in this repo
 
 1. **Forwarder (matches GoodDocs):** call CFAv1Forwarder with token, sender, receiver, flowRate, userData.
-2. **Host callAgreement:** encode CFA `createFlow` / `updateFlow` / `deleteFlow` and call the Superfluid host `callAgreement`; rich ABIs live in `.agents/skills/superfluid/references/contracts/ConstantFlowAgreementV1.abi.yaml` (and `Superfluid.abi.yaml` for the host).
+2. **Host callAgreement:** encode CFA `createFlow` / `updateFlow` / `deleteFlow` and call `Superfluid.callAgreement`.
+
+## Minimal method map
+
+- Forwarder:
+  - `createFlow(address token, address receiver, int96 flowrate, bytes userData)`
+  - `updateFlow(address token, address receiver, int96 flowrate, bytes userData)`
+  - `deleteFlow(address token, address sender, address receiver, bytes userData)`
+  - `getBufferAmountByFlowrate(address token, int96 flowrate)`
+- Host:
+  - `callAgreement(address agreementClass, bytes callData, bytes userData)`
+- CFA:
+  - `createFlow(address token, address receiver, int96 flowRate, bytes ctx)`
+  - `updateFlow(address token, address receiver, int96 flowRate, bytes ctx)`
+  - `deleteFlow(address token, address sender, address receiver, bytes ctx)`
 
 ## Required inputs
 
 - G$ Super Token address for the environment
-- CFA forwarder or Superfluid host plus CFA implementation per your stack
+- CFA forwarder address, or Superfluid host address plus CFA agreement address
 - `action`: create, update, delete
 - `receiver`, `flowRate` where applicable
 - `rpcUrl`, chain configuration, signer
@@ -68,8 +87,49 @@ if (process.env.ACTION === "delete") {
 }
 ```
 
+Host callAgreement example:
+
+```js
+import { ethers } from "ethers";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const cfa = new ethers.Interface([
+  "function createFlow(address,address,int96,bytes)",
+  "function updateFlow(address,address,int96,bytes)",
+  "function deleteFlow(address,address,address,bytes)",
+]);
+
+const host = new ethers.Contract(
+  process.env.SUPERFLUID_HOST,
+  ["function callAgreement(address,bytes,bytes) returns (bytes)"],
+  signer,
+);
+
+const token = process.env.SUPER_TOKEN;
+const sender = await signer.getAddress();
+const receiver = process.env.RECEIVER;
+const flowRate = BigInt(process.env.FLOW_RATE);
+
+let callData = "0x";
+if (process.env.ACTION === "create") {
+  callData = cfa.encodeFunctionData("createFlow", [token, receiver, flowRate, "0x"]);
+}
+if (process.env.ACTION === "update") {
+  callData = cfa.encodeFunctionData("updateFlow", [token, receiver, flowRate, "0x"]);
+}
+if (process.env.ACTION === "delete") {
+  callData = cfa.encodeFunctionData("deleteFlow", [token, sender, receiver, "0x"]);
+}
+
+const tx = await host.callAgreement(process.env.CFA_ADDRESS, callData, "0x");
+const receipt = await tx.wait();
+console.log(JSON.stringify({ txHash: receipt.hash, action: process.env.ACTION }, null, 2));
+```
+
 ## Failure handling
 
-- Wrong network: GoodDocs positions live streaming for G$ on Celo; other chains may not support the same flow.
-- Insufficient buffer: use forwarder helpers such as `getBufferAmountByFlowrate` as in GoodDocs.
-- Super App registration on Celo may require deployer allowlisting per warning in GoodDocs; direct builders to Telegram links from that page when relevant.
+- Wrong network or missing addresses: stop and return missing host or forwarder or token addresses.
+- Insufficient buffer: use `getBufferAmountByFlowrate` and reduce flow rate or top up balance.
+- Revert on create or update: verify token is a SuperToken and flowRate is positive.

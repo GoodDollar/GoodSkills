@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "superfluid": {
+      "source": "superfluid-org/skills",
+      "sourceType": "github",
+      "computedHash": "bbb920fb1633b2c57ca34fc644be822a7f8ef0f7191bd0945634bda191e8e52c"
+    }
+  }
+}

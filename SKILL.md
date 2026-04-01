@@ -28,6 +28,7 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/bridge.md` — MessagePassingBridge (GoodDocs); optional OFT path via ABI refs.
 - `references/guides/stream.md` — Superfluid streams (Celo-oriented in GoodDocs).
 - `references/guides/check-identity.md` — whitelist and connected-address semantics.
+- `references/guides/goodsdks.md` — SDK-first integration routing for GoodSDKs packages.
 - `references/guides/gooddocs.md` — hub links to [GoodDocs](https://docs.gooddollar.org/).
 
 ## Use-case to guide map
@@ -38,6 +39,7 @@ All task-specific instructions live under `references/guides/`.
 - Buy or sell G$ against reserve rails -> `references/guides/swap.md`
 - Cross-chain bridge -> `references/guides/bridge.md`
 - Stream management -> `references/guides/stream.md`
+- SDK app integration tasks -> `references/guides/goodsdks.md`
 
 ## Execution rules
 

@@ -24,6 +24,50 @@ Determine whitelist or authentication status with deterministic on-chain reads.
 3. Treat non-zero root as tied to a whitelisted identity tree when that is the protocol rule for the deployment.
 4. Optionally read `isWhitelisted` or timestamps if the ABI exposes them.
 
+## Deterministic snippet
+
+```js
+import { ethers } from "ethers";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
+const nameService = new ethers.Contract(
+  process.env.NAMESERVICE_ADDRESS,
+  ["function getAddress(string) view returns (address)"],
+  provider,
+);
+
+const identityAddress = await nameService.getAddress("IDENTITY");
+const identity = new ethers.Contract(
+  identityAddress,
+  [
+    "function getWhitelistedRoot(address) view returns (address)",
+    "function isWhitelisted(address) view returns (bool)",
+    "function lastAuthenticated(address) view returns (uint256)",
+  ],
+  provider,
+);
+
+const account = process.env.ACCOUNT;
+const root = await identity.getWhitelistedRoot(account);
+const isWhitelisted = await identity.isWhitelisted(account);
+const lastAuthenticated = await identity.lastAuthenticated(account);
+
+console.log(
+  JSON.stringify(
+    {
+      account,
+      identityAddress,
+      whitelistedRoot: root,
+      isWhitelisted,
+      lastAuthenticated: lastAuthenticated.toString(),
+    },
+    null,
+    2,
+  ),
+);
+```
+
 ## Return shape
 
 - `isWhitelisted` or equivalent boolean summary

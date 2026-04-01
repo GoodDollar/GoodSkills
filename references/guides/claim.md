@@ -25,6 +25,50 @@ Execute a safe `claim()` with identity pre-checks and clear outputs.
 4. Call `claim()` on the resolved UBIScheme (contract generation may differ by deployment; align ABI with your target).
 5. Return tx hash and claimed amount when derivable from events or balance delta.
 
+## Deterministic snippet
+
+```js
+import { ethers } from "ethers";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const nameService = new ethers.Contract(
+  process.env.NAMESERVICE_ADDRESS,
+  ["function getAddress(string) view returns (address)"],
+  provider,
+);
+
+const identityAddress = await nameService.getAddress("IDENTITY");
+const ubiAddress = await nameService.getAddress("UBISCHEME");
+
+const identity = new ethers.Contract(
+  identityAddress,
+  [
+    "function isWhitelisted(address) view returns (bool)",
+    "function getWhitelistedRoot(address) view returns (address)",
+  ],
+  provider,
+);
+
+const account = await signer.getAddress();
+const isWhitelisted = await identity.isWhitelisted(account);
+if (!isWhitelisted) throw new Error("Account is not whitelisted");
+
+const root = await identity.getWhitelistedRoot(account);
+if (root === ethers.ZeroAddress) throw new Error("No whitelisted root");
+
+const ubi = new ethers.Contract(
+  ubiAddress,
+  ["function claim()", "event UBICalculated(address,uint256,uint256,uint256)"],
+  signer,
+);
+
+const tx = await ubi.claim();
+const receipt = await tx.wait();
+console.log(JSON.stringify({ txHash: receipt.hash, account, root }, null, 2));
+```
+
 ## Pre-check failures
 
 - Not whitelisted: stop and point the user to identity verification flows in GoodDocs.

@@ -25,6 +25,67 @@ Run staking actions with balance and allowance safety checks.
 4. Execute `stake`, `withdrawRewards`, or `withdrawStake` as requested.
 5. Return tx hash and key resulting balances or events.
 
+## Deterministic snippets
+
+```js
+import { ethers } from "ethers";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const token = new ethers.Contract(
+  process.env.GOODDOLLAR_ADDRESS,
+  [
+    "function balanceOf(address) view returns (uint256)",
+    "function allowance(address,address) view returns (uint256)",
+    "function approve(address,uint256) returns (bool)",
+  ],
+  signer,
+);
+
+const staking = new ethers.Contract(
+  process.env.STAKING_ADDRESS,
+  [
+    "function stake(uint256)",
+    "function withdrawRewards()",
+    "function withdrawStake(uint256)",
+  ],
+  signer,
+);
+```
+
+Stake:
+
+```js
+const amount = ethers.parseUnits(process.env.AMOUNT, Number(process.env.DECIMALS));
+const owner = await signer.getAddress();
+const allowance = await token.allowance(owner, process.env.STAKING_ADDRESS);
+if (allowance < amount) {
+  const approveTx = await token.approve(process.env.STAKING_ADDRESS, amount);
+  await approveTx.wait();
+}
+const tx = await staking.stake(amount);
+const receipt = await tx.wait();
+console.log(JSON.stringify({ txHash: receipt.hash, action: "stake" }, null, 2));
+```
+
+Withdraw rewards:
+
+```js
+const tx = await staking.withdrawRewards();
+const receipt = await tx.wait();
+console.log(JSON.stringify({ txHash: receipt.hash, action: "withdrawRewards" }, null, 2));
+```
+
+Withdraw stake:
+
+```js
+const shares = ethers.parseUnits(process.env.SHARES, Number(process.env.DECIMALS));
+const tx = await staking.withdrawStake(shares);
+const receipt = await tx.wait();
+console.log(JSON.stringify({ txHash: receipt.hash, action: "withdrawStake" }, null, 2));
+```
+
 ## Failure handling
 
 - Insufficient balance: report shortfall.

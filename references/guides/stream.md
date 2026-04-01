@@ -26,6 +26,48 @@ Create, update, or delete Superfluid constant flows using the same primitives Go
 - `receiver`, `flowRate` where applicable
 - `rpcUrl`, chain configuration, signer
 
+## Deterministic snippet
+
+```js
+import { ethers } from "ethers";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const forwarder = new ethers.Contract(
+  process.env.CFA_FORWARDER,
+  [
+    "function createFlow(address,address,int96,bytes)",
+    "function updateFlow(address,address,int96,bytes)",
+    "function deleteFlow(address,address,address,bytes)",
+  ],
+  signer,
+);
+
+const token = process.env.SUPER_TOKEN;
+const sender = await signer.getAddress();
+const receiver = process.env.RECEIVER;
+const flowRate = BigInt(process.env.FLOW_RATE);
+
+if (process.env.ACTION === "create") {
+  const tx = await forwarder.createFlow(token, receiver, flowRate, "0x");
+  const receipt = await tx.wait();
+  console.log(JSON.stringify({ txHash: receipt.hash, action: "create" }, null, 2));
+}
+
+if (process.env.ACTION === "update") {
+  const tx = await forwarder.updateFlow(token, receiver, flowRate, "0x");
+  const receipt = await tx.wait();
+  console.log(JSON.stringify({ txHash: receipt.hash, action: "update" }, null, 2));
+}
+
+if (process.env.ACTION === "delete") {
+  const tx = await forwarder.deleteFlow(token, sender, receiver, "0x");
+  const receipt = await tx.wait();
+  console.log(JSON.stringify({ txHash: receipt.hash, action: "delete" }, null, 2));
+}
+```
+
 ## Failure handling
 
 - Wrong network: GoodDocs positions live streaming for G$ on Celo; other chains may not support the same flow.

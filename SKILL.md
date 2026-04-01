@@ -80,6 +80,10 @@ GoodDollar / Mento:
 - `references/contracts/GoodDollarStaking.abi.yaml`
 - `references/contracts/MentoBroker.abi.yaml`
 - `references/contracts/GoodDollarOFTAdapter.abi.yaml`
+- `references/contracts/CFAv1Forwarder.abi.yaml`
+- `references/contracts/ConstantFlowAgreementV1.abi.yaml`
+- `references/contracts/Superfluid.abi.yaml`
+- `references/contracts/SuperToken.abi.yaml`
 
 Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use `.agents/skills/superfluid/SKILL.md` and `.agents/skills/superfluid/references/contracts/`.
 

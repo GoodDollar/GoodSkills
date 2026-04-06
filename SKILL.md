@@ -31,6 +31,17 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/goodsdks.md` — SDK-first integration routing for GoodSDKs packages.
 - `references/guides/gooddocs.md` — hub links to [GoodDocs](https://docs.gooddollar.org/).
 
+## Subgraphs (indexed chain history)
+
+Use this folder with the same pattern as the protocol subgraph references: one `*-guide.md` plus one companion `.graphql` per deployment.
+
+- `references/subgraphs/_query-patterns.md` — cross-cutting query discipline.
+- `references/subgraphs/reserve-celo-guide.md` + `references/subgraphs/reserve-celo.graphql` — reserve pricing and swap history.
+- `references/subgraphs/gooddollar-celo-guide.md` + `references/subgraphs/gooddollar-celo.graphql` — GoodDollar Celo schema discovery and starter probes.
+- `references/subgraphs/goodcollective-guide.md` + `references/subgraphs/goodcollective.graphql` — GoodCollective schema discovery and starter probes.
+
+For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Superfluid documentation](https://docs.superfluid.finance/) and [subgraph endpoints](https://subgraph-endpoints.superfluid.dev/).
+
 ## Use-case to guide map
 
 - Claim requests -> `references/guides/claim.md`
@@ -40,6 +51,7 @@ All task-specific instructions live under `references/guides/`.
 - Cross-chain bridge -> `references/guides/bridge.md`
 - Stream management -> `references/guides/stream.md`
 - SDK app integration tasks -> `references/guides/goodsdks.md`
+- Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
 
 ## Execution rules
 
@@ -87,7 +99,7 @@ GoodDollar / Mento:
 - `references/contracts/Superfluid.abi.yaml`
 - `references/contracts/SuperToken.abi.yaml`
 
-Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use `.agents/skills/superfluid/SKILL.md` and `.agents/skills/superfluid/references/contracts/`.
+Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](https://docs.superfluid.finance/), npm packages such as `@superfluid-finance/ethereum-contracts` and `@sfpro/sdk`, and contract ABIs published with those packages.
 
 ## Deep researches
 
@@ -113,6 +125,6 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use `.agents/skills/su
 
 1. Open `references/guides/gooddocs.md` when unsure which GoodDocs page applies.
 2. Start at this file to classify intent.
-3. Open one guide under `references/guides/` unless the user requests a multi-step workflow.
+3. Open one guide under `references/guides/` unless the user requests a multi-step workflow. For subgraph or indexed-data tasks, start at `references/subgraphs/_query-patterns.md`.
 4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
 5. Prefer GoodDocs and deployment.json over assumptions.

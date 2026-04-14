@@ -30,6 +30,7 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/check-identity.md` — whitelist and connected-address semantics.
 - `references/guides/goodsdks.md` — SDK-first integration routing for GoodSDKs packages.
 - `references/guides/gooddocs.md` — hub links to [GoodDocs](https://docs.gooddollar.org/).
+- `references/guides/hypersync-hyperrpc.md` — Envio HyperSync/HyperRPC data-source routing for high-volume historical reads.
 
 ## Subgraphs (indexed chain history)
 
@@ -51,6 +52,7 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 - Cross-chain bridge -> `references/guides/bridge.md`
 - Stream management -> `references/guides/stream.md`
 - SDK app integration tasks -> `references/guides/goodsdks.md`
+- Bulk historical reads or data-engineering fetches -> `references/guides/hypersync-hyperrpc.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
 
 ## Execution rules
@@ -130,3 +132,4 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 3. Open one guide under `references/guides/` unless the user requests a multi-step workflow. For subgraph or indexed-data tasks, start at `references/subgraphs/_query-patterns.md`.
 4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
 5. Prefer GoodDocs and deployment.json over assumptions.
+6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.

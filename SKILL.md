@@ -100,8 +100,9 @@ GoodDollar / Mento:
 - `references/contracts/IdentityV3.abi.yaml`
 - `references/contracts/IdentityV4.abi.yaml`
 - `references/contracts/InvitesV2.abi.yaml`
+- `references/contracts/BuyGDCloneFactory.abi.yaml`
+- `references/contracts/BuyGDCloneV2.abi.yaml`
 - `references/contracts/UBISchemeV2.abi.yaml`
-- `references/contracts/GoodDollarStaking.abi.yaml`
 - `references/contracts/MentoBroker.abi.yaml`
 - `references/contracts/GoodDollarOFTAdapter.abi.yaml`
 - `references/contracts/CFAv1Forwarder.abi.yaml`

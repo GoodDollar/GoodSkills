@@ -33,5 +33,5 @@ This is a **routing guide** (quick link map), not a deep protocol analysis note.
 
 ## This repo
 
-- Action playbooks: `references/guides/*.md` (mirror GoodDocs flows where applicable).
+- Action playbooks: `references/guides/*.md`.
 - Rich ABIs: `references/contracts/*.abi.yaml`.

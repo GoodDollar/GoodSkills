@@ -4,7 +4,7 @@ This document aligns agent explanations with [How GoodDollar works](https://docs
 
 ## Monetary creation (protocol level)
 
-- New G$ is created in connection with reserve mechanics: purchases into the reserve and reserve-side parameters (including reserve ratio and leverage) influence how much G$ can be issued while maintaining backing (see sustainability and issuance sections in GoodDocs).
+- New G$ is created in connection with reserve mechanics: purchases into the reserve and reserve-side parameters (including reserve ratio) influence how much G$ can be issued while maintaining backing (see sustainability and issuance sections in GoodDocs).
 - Selling G$ back to the reserve burns supply in that model.
 - G$ that the protocol creates is allocated across UBI, savings incentives, treasury, and ecosystem uses per the distribution section of GoodDocs.
 

@@ -9,8 +9,8 @@ GoodProtocol’s on-chain **governance shell** is largely **DAOStack-shaped**: a
 ### Avatar
 
 - **`nativeToken()`** — often the G$ token address for the deployment.
-- **`nativeReputation()`** — GOOD (or reputation) token for voting weight.
-- **`owner()`** — avatar owner metadata.
+- **`nativeReputation()`** — **`GReputation`** token for voting weight (see `GReputation` in `deployment.json`).
+- **`owner()`** — owner of the Avatar, typically the **`Controller`** contract.
 
 ### Controller
 

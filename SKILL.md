@@ -33,6 +33,7 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/hypersync-hyperrpc.md` — Envio HyperSync/HyperRPC data-source routing for high-volume historical reads.
 - `references/guides/faucet.md` — Faucet gas top-up execution flow and preflight checks.
 - `references/guides/on-off-ramp.md` — stable-token ramp service flow into and out of G$.
+- `references/guides/invite-bounties.md` — verify and execute inviter-invitee bounty payouts.
 
 ## Subgraphs (indexed chain history)
 
@@ -57,6 +58,7 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 - Bulk historical reads or data-engineering fetches -> `references/guides/hypersync-hyperrpc.md`
 - Faucet top-up tasks -> `references/guides/faucet.md`
 - On-/off-ramp service flow tasks -> `references/guides/on-off-ramp.md`
+- Invite bounty eligibility and payout tasks -> `references/guides/invite-bounties.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
 
 ## Execution rules

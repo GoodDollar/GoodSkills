@@ -102,6 +102,8 @@ join:
   errors: [NOT_ACTIVE, INVITE_CODE_IN_USE, SELF_INVITE, USER_ALREADY_JOINED]
 
 canCollectBountyFor:
+  notes:
+    - "Primary eligibility gate: checks active state, whitelist, minimumDays, minimumClaims, unpaid bounty, and chain constraints."
   mutability: view
   inputs:
     - _invitee: address
@@ -130,6 +132,8 @@ getPendingBounties:
     - count: uint256
 
 bountyFor:
+  notes:
+    - "Single-invitee payout path; revalidates eligibility and transfers bounty shares to inviter/invitee on success."
   mutability: nonpayable
   access: anyone
   inputs:
@@ -140,6 +144,8 @@ bountyFor:
   errors: [NOT_ACTIVE, NOT_ELIGIBLE_BOUNTY]
 
 collectBounties:
+  notes:
+    - "Batch payout path over caller pending invitees; useful for claiming multiple matured bounties in one tx."
   mutability: nonpayable
   access: anyone
   inputs: []
@@ -148,6 +154,8 @@ collectBounties:
   errors: [NOT_ACTIVE]
 
 setLevel:
+  notes:
+    - "Configures inviter level progression rule and bounty amount (bounty units are G$ cents)."
   mutability: nonpayable
   access: ownerOrAvatar
   inputs:
@@ -165,6 +173,8 @@ setActive:
   outputs: []
 
 setCampaignCode:
+  notes:
+    - "Maps a campaign code to contract-address inviter flow (address(this)) used by join."
   mutability: nonpayable
   access: ownerOrAvatar
   inputs:
@@ -172,6 +182,8 @@ setCampaignCode:
   outputs: []
 
 setMinimums:
+  notes:
+    - "Sets minimumClaims and minimumDays thresholds used by canCollectBountyFor."
   mutability: nonpayable
   access: ownerOrAvatar
   inputs:

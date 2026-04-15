@@ -27,6 +27,8 @@ initialize:
   outputs: []
 
 setReserves:
+  notes:
+    - "Updates reserve address per already-listed provider without changing provider registration."
   mutability: nonpayable
   access: owner
   inputs:
@@ -64,6 +66,9 @@ removeExchangeProvider:
     - INDEX_MISMATCH
 
 getAmountIn:
+  notes:
+    - "Exact-output quote path: returns required tokenIn for target amountOut."
+    - "Pre-checks collateral reserve balance when tokenOut is collateral."
   mutability: view
   inputs:
     - exchangeProvider: address
@@ -78,6 +83,9 @@ getAmountIn:
     - INSUFFICIENT_RESERVE_BALANCE
 
 getAmountOut:
+  notes:
+    - "Exact-input quote path: returns expected tokenOut for fixed amountIn."
+    - "Pre-checks collateral reserve balance when tokenOut is collateral."
   mutability: view
   inputs:
     - exchangeProvider: address
@@ -147,6 +155,8 @@ burnStableTokens:
     - COLLATERAL_TRANSFER_FAILED
 
 configureTradingLimit:
+  notes:
+    - "Sets per (exchangeId, token) limit config used by swapIn/swapOut guardTradingLimits checks."
   mutability: nonpayable
   access: owner
   inputs:
@@ -157,6 +167,8 @@ configureTradingLimit:
   emits: [TradingLimitConfigured]
 
 getExchangeProviders:
+  notes:
+    - "Discovery helper for clients that need the active provider set before quoting/swapping."
   mutability: view
   inputs: []
   outputs:

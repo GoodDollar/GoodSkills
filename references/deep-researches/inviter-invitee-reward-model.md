@@ -18,6 +18,12 @@ Each address has an **`Identity`** record: **`dateAuthenticated`**, **`dateAdded
 
 3. **`InvitesV2.canCollectBountyFor`** uses **`getIdentity().isWhitelisted(_invitee)`** (and the same for the inviter when present). That is evaluated on the **specific address** passed in (the invitee’s joined address). It does **not** substitute **`getWhitelistedRoot`**; if product flows use a “connected” wallet for claiming, the invitee address used in **`join`** must still pass **`isWhitelisted`** on that same address for bounty rules, unless the app layer maps addresses first.
 
+### Analysis metric definitions (use these names consistently)
+
+- **Passed whitelisting (historical)**: **`lastAuthenticated(account) > 0`** (or **`identities[account].dateAuthenticated > 0`** when direct storage is available). This means the account was authenticated at least once, including fallback via **`oldIdentity`** in **`lastAuthenticated`**.
+- **Still whitelisted (current)**: **`getWhitelistedRoot(account) != address(0)`** (or equivalently current **`isWhitelisted(account)`** depending on the query shape). This means the account is currently valid for whitelist-gated checks.
+- Do not use **`getWhitelistedRoot(account) != 0x0`** as the definition of "passed whitelisting"; that measures current status, not historical pass.
+
 ### Blacklist and DAO contracts
 
 - **`isBlacklisted`**: local **`status == 255`**, else **`oldIdentity`** fallback.

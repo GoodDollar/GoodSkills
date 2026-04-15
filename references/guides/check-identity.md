@@ -11,6 +11,12 @@ Use when the user asks whether an address is eligible for UBI or how identity li
 
 Determine whitelist or authentication status with deterministic on-chain reads.
 
+## Metric semantics
+
+- **Passed whitelisting (historical):** use `lastAuthenticated(account) > 0`.
+- **Still whitelisted (current):** use `getWhitelistedRoot(account) != 0x0` or `isWhitelisted(account) == true`.
+- `getWhitelistedRoot(account) != 0x0` is a current-state signal, not an "ever passed" signal.
+
 ## Required inputs
 
 - `nameServiceAddress` or explicit Identity address
@@ -22,7 +28,7 @@ Determine whitelist or authentication status with deterministic on-chain reads.
 1. Resolve `IDENTITY` from NameService when used on the deployment.
 2. Read `getWhitelistedRoot(account)` or equivalent for the deployed Identity version.
 3. Treat non-zero root as tied to a whitelisted identity tree when that is the protocol rule for the deployment.
-4. Optionally read `isWhitelisted` or timestamps if the ABI exposes them.
+4. Read `lastAuthenticated(account)` for historical pass status and `getWhitelistedRoot(account)` or `isWhitelisted(account)` for current status.
 
 ## Deterministic snippet
 
@@ -72,6 +78,7 @@ console.log(
 
 - `isWhitelisted` or equivalent boolean summary
 - `whitelistedRoot` or equivalent
+- `lastAuthenticated` for historical-pass classification
 - optional metadata fields when available
 
 ## Failure handling

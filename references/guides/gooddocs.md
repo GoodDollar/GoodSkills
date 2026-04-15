@@ -2,6 +2,8 @@
 
 Canonical protocol documentation lives at [GoodDocs](https://docs.gooddollar.org/).
 
+This is a **routing guide** (quick link map), not a deep protocol analysis note.
+
 ## Start here
 
 - [Welcome](https://docs.gooddollar.org/)

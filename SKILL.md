@@ -31,6 +31,8 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/goodsdks.md` — SDK-first integration routing for GoodSDKs packages.
 - `references/guides/gooddocs.md` — hub links to [GoodDocs](https://docs.gooddollar.org/).
 - `references/guides/hypersync-hyperrpc.md` — Envio HyperSync/HyperRPC data-source routing for high-volume historical reads.
+- `references/guides/faucet.md` — Faucet gas top-up execution flow and preflight checks.
+- `references/guides/on-off-ramp.md` — stable-token ramp service flow into and out of G$.
 
 ## Subgraphs (indexed chain history)
 
@@ -53,6 +55,8 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 - Stream management -> `references/guides/stream.md`
 - SDK app integration tasks -> `references/guides/goodsdks.md`
 - Bulk historical reads or data-engineering fetches -> `references/guides/hypersync-hyperrpc.md`
+- Faucet top-up tasks -> `references/guides/faucet.md`
+- On-/off-ramp service flow tasks -> `references/guides/on-off-ramp.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
 
 ## Execution rules
@@ -112,7 +116,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 - `references/deep-researches/inviter-invitee-reward-model.md`
 - `references/deep-researches/mento-reserve-economics.md`
 - `references/deep-researches/gooddao-daostack-surface.md`
-- `references/deep-researches/faucet-test-flows.md`
+- `references/deep-researches/faucet-flows.md`
 
 ## Revert debugging quick map
 
@@ -122,7 +126,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 - MessagePassingBridge failures -> `canBridge`, fee sufficiency, correct `bridgeTo` arguments; [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
 - OFT path failures -> peer wiring and `quoteSend` fee data.
 - Stream failures -> CFA forwarder or host agreement calls, buffer and flow-rate limits per Superfluid docs linked from GoodDocs.
-- Faucet top-up failures -> `canTop`, `onlyAuthorized`, daily or weekly caps; `references/deep-researches/faucet-test-flows.md`.
+- Faucet top-up failures -> `canTop`, `onlyAuthorized`, daily or weekly caps; `references/deep-researches/faucet-flows.md`.
 - DAO-gated reverts -> caller is not avatar; scheme not registered; `references/deep-researches/gooddao-daostack-surface.md`.
 
 ## Library usage discipline

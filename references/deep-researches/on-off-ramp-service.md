@@ -21,6 +21,13 @@ Use this note for the service pattern where ramp providers do not list G$ direct
 
 The factory deploys EIP-1167 minimal clones and wires swap infrastructure (router, oracle, quoter, optional Mento broker configuration, G$ token, stable token).
 
+Swap execution is **dual-path**:
+
+- **Uniswap-style route** (router/quoter path)
+- **Mento-based route** (broker/exchange-provider path)
+
+For each swap request, the service compares quoted outputs and selects the route with the **larger `amountOut`** (best execution for the same input amount), then enforces `minAmount` guard on the selected path.
+
 Each user gets a deterministic clone address from owner-based salt:
 
 - `predict(owner)` for buy clone
@@ -32,40 +39,28 @@ This is why clone-per-user design is used:
 - isolated execution context
 - cheaper deployment than full contract instances
 
-## Ramp flows
+## Execution surface (conceptual)
 
-### On-ramp (fiat -> stable -> G$)
-
-1. User receives listed stable token from ramp provider.
-2. Service resolves user clone via `predict` (or `create` if missing).
-3. Swap stable -> G$ through clone (`createAndSwap` or swap after `create`).
-4. Return resulting G$ to destination wallet.
-
-### Off-ramp (G$ -> stable -> fiat)
-
-1. User provides G$ to service flow.
-2. Service swaps G$ -> listed stable token using configured rails.
-3. Stable token is sent to off-ramp provider destination for fiat payout.
-
-## Entrypoints to use
+The operational surface is intentionally small and deterministic:
 
 - `create(owner)`
 - `createAndSwap(owner, minAmount)`
 - `predict(owner)`
 - `createDonation`, `createDonationAndSwap`, `predictDonation`
 
-## Operational requirements
-
-1. Resolve factory address per chain from `deployment.json`.
-2. Verify clone address against `predict` before routing funds.
-3. Enforce slippage guard (`minAmount`) on swap paths.
-4. Record chain id, factory, predicted/actual clone, and tx hashes.
+This keeps on-/off-ramp architecture auditable and predictable across users.
 
 ## Risks
 
 - Wrong factory or wrong chain causes permanent fund loss risk.
 - Stale router/oracle/mento config can fail swap or produce bad execution.
 - Missing `minAmount` protection increases slippage risk.
+- Quote source mismatch or stale quotes across Uniswap/Mento can pick a suboptimal route if not refreshed just before execution.
+
+## Boundary note
+
+This file explains **why** this architecture exists for ramp services and why per-user clones matter.  
+For step-by-step service execution flow, use `references/guides/on-off-ramp.md`.
 
 ## Cross-reference
 

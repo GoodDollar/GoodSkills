@@ -6,7 +6,7 @@ This note ties **macro G$ economics** (GoodDocs) to **Mento trading surfaces** (
 
 - G$ is **reserve-backed**; issuance and price discovery follow an **augmented bonding curve** (Bancor-style dynamics) described in [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works).
 - **Buying** from the reserve side increases reserve assets and can support **new G$ supply** within reserve rules; **selling back** burns G$ and returns collateral, with parameters governed by **GoodDAO**.
-- Distribution of newly created G$ spans UBI, savings incentives, treasury, and ecosystem allocations (same doc).
+- Distribution of newly created G$ spans UBI, savings incentives, treasury, and ecosystem allocations (same doc), but execution timing depends on the mint path and distribution trigger used by the deployment flow.
 
 ## User-facing buy and sell (historical vs current)
 
@@ -19,10 +19,6 @@ On networks where GoodDollar uses Mento (see core contracts table):
 - **`IBroker`** (implementation in [mento-core `Broker.sol`](https://github.com/mento-org/mento-core)) is the usual **swap entrypoint**: `getAmountIn` / `getAmountOut`, `swapIn` (exact in), `swapOut` (exact out), plus **trading limits** state per exchange id and token.
 - **Reserve** holds collateral; **exchange provider** contracts price trades against the reserve; **GoodDollarExpansionController** and related interfaces in GoodProtocol’s [`MentoInterfaces.sol`](https://github.com/GoodDollar/GoodProtocol/blob/master/contracts/MentoInterfaces.sol) describe expansion and avatar wiring for governance-facing changes.
 - Agents should not hardcode **exchangeId** or provider addresses: read them from deployment metadata or discover via `getExchangeProviders()` after confirming the broker address for the chain.
-
-## How this relates to `references/contracts/MentoBroker.abi.yaml`
-
-That file documents the **broker trader + admin** surface used for quotes and swaps. It does **not** replace reading **Reserve** or **ExchangeProvider** ABIs when debugging pricing, liquidity, or reserve-specific reverts.
 
 ## Agent guidance
 

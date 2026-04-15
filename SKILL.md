@@ -107,7 +107,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 
 ## Deep researches
 
-- `references/deep-researches/buy-gd-clone-factory.md`
+- `references/deep-researches/on-off-ramp-service.md`
 - `references/deep-researches/how-ubi-is-minted.md`
 - `references/deep-researches/inviter-invitee-reward-model.md`
 - `references/deep-researches/mento-reserve-economics.md`

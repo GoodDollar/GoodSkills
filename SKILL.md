@@ -12,6 +12,8 @@ metadata:
 
 Routing index for GoodProtocol. This repo complements [GoodDocs](https://docs.gooddollar.org/). For deployment truth across environments read [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) and [GoodProtocol/releases/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
 
+Repository maintenance and update process is documented in `CONTRIBUTING.md`.
+
 ## Protocol snapshot (from GoodDocs)
 
 - G$ is reserve-backed; issuance and pricing tie to the reserve and bonding-curve mechanics described in [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works).

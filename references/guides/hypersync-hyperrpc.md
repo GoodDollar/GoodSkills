@@ -27,8 +27,9 @@ Use this guide when the task is high-volume historical blockchain data fetch (ev
 ## Access and auth
 
 - HyperRPC/HyperSync usage is account-based.
-- Requests without API token are rate-limited.
-- Add token in endpoint URL as documented by Envio.
+- HyperRPC requires an API key for reliable production use.
+- Requests without API token are rate-limited and should be treated as non-production fallback only.
+- Add API key in endpoint URL as documented by Envio.
 - HyperRPC token pattern example from docs: `https://<chain>.rpc.hypersync.xyz/<api-token>`
 
 ## Practical use in this repo

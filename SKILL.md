@@ -58,7 +58,24 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
    - indexing lag makes subgraph data stale for the requested range
    - query limits or endpoint instability block reliable retrieval
 3. Do not start with HyperRPC when subgraph data is available and fresh.
-4. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
+4. HyperRPC fallback requires a valid Envio API key; if missing, report blocked fallback and return corrective action.
+5. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
+
+## Data source decision table
+
+| Query type | Primary source | Secondary source | Notes |
+|---|---|---|---|
+| Current on-chain state (latest balances, allowances, config, flags, view calls) | RPC | None | Use direct contract RPC reads for latest state. |
+| Historical indexed entity data (time-series, aggregates, protocol entities, event-derived analytics) | Subgraph | HyperSync/HyperRPC | Subgraph is mandatory first choice. |
+| Historical raw on-chain data when subgraph is missing fields/entities or stale | HyperSync | HyperRPC | Prefer HyperSync for bulk scans and data pipelines. |
+| Historical data for existing JSON-RPC integrations | HyperRPC | HyperSync | Use HyperRPC when strict JSON-RPC compatibility is required. |
+
+Decision rule:
+
+1. If request is current state -> use RPC.
+2. If request is historical/indexed -> query subgraph first.
+3. If subgraph cannot satisfy request -> fallback to HyperSync or HyperRPC per compatibility and scale needs.
+4. HyperRPC fallback requires Envio API key credentials.
 
 ## Use-case to guide map
 
@@ -156,3 +173,4 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 5. Prefer GoodDocs and deployment.json over assumptions.
 6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.
 7. Historical data routing is strict: subgraphs first; HyperRPC only with an explicit fallback reason.
+8. HyperRPC usage requires Envio API key credentials; when absent, do not attempt anonymous production flow.

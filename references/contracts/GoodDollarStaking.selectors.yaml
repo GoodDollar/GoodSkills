@@ -1,0 +1,41 @@
+# GoodDollarStaking — selectors via cast
+
+functions:
+  stake(uint256):                                             0xa694fc3a
+  onTokenTransfer(address,uint256,bytes):                    0xa4c0ed36
+  withdrawStake(uint256):                                     0x25d5971f
+  withdrawRewards():                                         0xc7b8981c
+  decimals():                                                0x313ce567
+  sharesOf(address):                                         0xf5eb42dc
+  sharesSupply():                                            0x22022a29
+  setMonthlyGOODRewards(uint256):                             0x6eb62984
+  setBlockPerYear(uint128):                                   0xe087788e
+  setGdApy(uint128):                                         0xb20b9979
+  getRewardsPerBlock():                                       0x0c1cd7f3
+  getStaked(address):                                        0x399080ec
+  getUserPendingReward(address):                              0xc6710629
+  goodStakerInfo(address):                                    0xebe91644
+  totalRewardsPerShare():                                     0xbf8e9b6e
+  upgrade():                                                 0xd55ec697
+  pause(bool,uint128):                                       0xfea6f4f5
+  upgradeTo(address):                                        0x3659cfe6
+  totalSupply():                                             0x18160ddd
+  balanceOf(address):                                        0x70a08231
+  transfer(address,uint256):                                  0xa9059cbb
+  approve(address,uint256):                                   0x095ea7b3
+  transferFrom(address,address,uint256):                      0x23b872dd
+  allowance(address,address):                                 0xdd62ed3e
+  name():                                                    0x06fdde03
+  symbol():                                                  0x95d89b41
+
+events:
+  Staked(address,uint256):                                    0x9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d
+  StakeWithdraw(address,uint256,uint256,uint256,uint256,uint256,uint256): 0xb4445b5ca5d925c0bf5fb70a192f888574bff35d4da72ff1c5dae14df544310c
+  ReputationEarned(address,uint256):                         0x43848d0574703c28d68ae8958e0571521618f60c4bcacfb094cff2156eaae0f1
+  RewardsNotSent(address,uint256,uint256):                    0x00bf1ad6dc928dba623a6fa0f94a5a7066d3a4ea1fba064b71e9afe629b6fa1f
+  StakeUpgraded(address,uint256,uint256,uint256,uint256,uint256): 0x9812190ad3df6de1c4b9a4acfdb8a7d84070af20c1fffd053968b2f3c2260416
+  APYSet(uint128):                                           0x5e47ff33a7f14c29b3d9d622df796f19d1af1adf178ff7e266844cc8362457c0
+  GOODRewardsSet(uint256):                                    0x1bda1e84e6af3f7391d288a491b734032ae9ea89ad3ebbc213d352456ab51a2b
+
+errors:
+  # Primarily string reverts; decode with tenderly / traces when needed.

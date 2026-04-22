@@ -150,6 +150,7 @@ GoodDollar / Mento:
 - `references/contracts/BuyGDCloneV2.abi.yaml`
 - `references/contracts/UBISchemeV2.abi.yaml`
 - `references/contracts/MentoBroker.abi.yaml`
+- `references/contracts/MessagePassingBridge.abi.yaml`
 - `references/contracts/GoodDollarOFTAdapter.abi.yaml`
 - `references/contracts/CFAv1Forwarder.abi.yaml`
 - `references/contracts/ConstantFlowAgreementV1.abi.yaml`

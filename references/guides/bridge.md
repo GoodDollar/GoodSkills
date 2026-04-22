@@ -2,6 +2,10 @@
 
 Use for moving G$ across supported networks with deployment-specific bridge contracts.
 
+Primary local ABI reference for MessagePassingBridge flow:
+
+- `references/contracts/MessagePassingBridge.abi.yaml`
+
 ## GoodDocs alignment
 
 - User flow and high-level behavior: [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).

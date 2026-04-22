@@ -41,12 +41,24 @@ All task-specific instructions live under `references/guides/`.
 
 Use this folder with the same pattern as the protocol subgraph references: one `*-guide.md` plus one companion `.graphql` per deployment.
 
+For historical on-chain data fetching, subgraphs are mandatory first choice. Use HyperRPC only as explicit fallback via `references/guides/hypersync-hyperrpc.md`.
+
 - `references/subgraphs/_query-patterns.md` — cross-cutting query discipline.
 - `references/subgraphs/reserve-celo-guide.md` + `references/subgraphs/reserve-celo.graphql` — reserve pricing and swap history.
 - `references/subgraphs/gooddollar-celo-guide.md` + `references/subgraphs/gooddollar-celo.graphql` — GoodDollar Celo schema discovery and starter probes.
 - `references/subgraphs/goodcollective-guide.md` + `references/subgraphs/goodcollective.graphql` — GoodCollective schema discovery and starter probes.
 
 For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Superfluid documentation](https://docs.superfluid.finance/) and [subgraph endpoints](https://subgraph-endpoints.superfluid.dev/).
+
+## Historical data routing policy (strict)
+
+1. Query subgraphs first for all historical/indexed requests.
+2. Use HyperRPC fallback only when at least one of these is true:
+   - required entities or fields are not available in subgraph schema
+   - indexing lag makes subgraph data stale for the requested range
+   - query limits or endpoint instability block reliable retrieval
+3. Do not start with HyperRPC when subgraph data is available and fresh.
+4. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
 
 ## Use-case to guide map
 
@@ -62,6 +74,7 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 - On-/off-ramp service flow tasks -> `references/guides/on-off-ramp.md`
 - Invite bounty eligibility and payout tasks -> `references/guides/invite-bounties.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
+- Historical on-chain fetch when subgraph data is insufficient -> subgraphs first, then HyperRPC fallback via `references/guides/hypersync-hyperrpc.md`
 
 ## Execution rules
 
@@ -142,3 +155,4 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
 5. Prefer GoodDocs and deployment.json over assumptions.
 6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.
+7. Historical data routing is strict: subgraphs first; HyperRPC only with an explicit fallback reason.

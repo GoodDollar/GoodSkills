@@ -23,6 +23,8 @@ getClaimerCount:
     - count: uint256
 
 getClaimAmount:
+  notes:
+    - "Returns aggregate amount claimed for the provided day index."
   mutability: view
   inputs:
     - day: uint256
@@ -86,6 +88,8 @@ estimateNextDailyUBI:
     - amount: uint256
 
 "checkEntitlement(address)":
+  notes:
+    - "Checks claimable amount for the provided member using that account's whitelisted root."
   mutability: view
   inputs:
     - _member: address
@@ -127,6 +131,8 @@ pause:
   errors: [ONLY_AVATAR]
 
 setNewClaimersReserveFactor:
+  notes:
+    - "Adjusts reserveFactor used by distribution formula to reserve part of pool for new claimers."
   mutability: nonpayable
   access: avatar
   inputs:
@@ -135,6 +141,8 @@ setNewClaimersReserveFactor:
   errors: [ONLY_AVATAR]
 
 withdraw:
+  notes:
+    - "Avatar-controlled treasury action transferring G$ from scheme balance to recipient."
   mutability: nonpayable
   access: avatar
   inputs:
@@ -146,6 +154,8 @@ withdraw:
     - WITHDRAW_FAILED
 
 lastClaimed:
+  notes:
+    - "Returns last claim timestamp keyed by account root logic used by hasClaimed checks."
   mutability: view
   inputs:
     - account: address

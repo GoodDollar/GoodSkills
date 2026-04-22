@@ -1,0 +1,12 @@
+{
+  "name": "goodskills",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "js-sha3": "^0.9.3"
+  },
+  "scripts": {
+    "deployment": "node scripts/deployment.mjs",
+    "selectors": "node scripts/selectors.mjs"
+  }
+}

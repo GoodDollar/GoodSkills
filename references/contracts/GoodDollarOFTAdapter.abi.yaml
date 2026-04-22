@@ -9,7 +9,6 @@ meta:
     - https://github.com/LayerZero-Labs/devtools
   note: >
     Flow: optional peers(dstEid) check -> approve underlying to minterBurner if
-    approvalRequired -> quoteSend(SendParam, payInLzToken) -> send(SendParam,
     MessagingFee, refundAddress) paying nativeFee in msg.value when applicable.
     SendParam mirrors LayerZero OFT: dstEid, to (bytes32 padded recipient),
     amountLD, minAmountLD, extraOptions, composeMsg, oftCmd.
@@ -31,12 +30,6 @@ minterBurner:
   inputs: []
   outputs:
     - minterBurner: address
-
-approvalRequired:
-  mutability: view
-  inputs: []
-  outputs:
-    - required: bool
 
 oftVersion:
   mutability: view
@@ -83,6 +76,8 @@ quoteSend:
 send:
   notes:
     - "Payable: include MessagingFee.nativeFee in msg.value when fee is native."
+    - "Consumes sendParam.amountLD from sender on source chain and emits cross-chain message to dstEid peer."
+    - "sendParam.to must be destination receiver encoded as bytes32."
   mutability: payable
   access: sender
   inputs:

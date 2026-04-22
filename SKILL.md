@@ -77,6 +77,20 @@ Decision rule:
 3. If subgraph cannot satisfy request -> fallback to HyperSync or HyperRPC per compatibility and scale needs.
 4. HyperRPC fallback requires Envio API key credentials.
 
+## Mapping data retrieval rule
+
+Solidity mappings are not iterable on-chain by keyspace scan. Do not assume full-key enumeration is possible from RPC alone.
+
+When data is stored in mapping-like structures:
+
+1. Check contract source and ABI for key-discovery paths first:
+   - events emitted on set or update
+   - arrays, counters, linked lists, or index getters storing keys
+   - dedicated pagination or enumerable view functions
+2. If key discovery exists, reconstruct key set from those sources and then read mapping entries.
+3. If key discovery does not exist, report that complete iteration is not possible from chain state alone.
+4. For historical reconstruction, prefer subgraph indexing first; if unavailable, use HyperSync or HyperRPC log scans with explicit limitations.
+
 ## Use-case to guide map
 
 - Claim requests -> `references/guides/claim.md`

@@ -191,3 +191,4 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 7. Historical data routing is strict: subgraphs first; HyperRPC only with an explicit fallback reason.
 8. HyperRPC usage requires Envio API key credentials; when absent, do not attempt anonymous production flow.
 9. For subgraph tasks, validate field availability from the relevant `references/subgraphs/*-guide.md` and companion `.graphql` before guessing alternate entities.
+10. For local shells repeating HyperRPC log pulls (for example last N whitelist events), run `scripts/fetch-whitelist-events-hyperrpc.mjs` per `references/guides/hypersync-hyperrpc.md` instead of re-deriving JSON-RPC setup each time; the script defaults to production Celo Identity and HyperRPC URL composition from `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` unless overridden. HyperSync remains a separate client install path documented in the same guide.

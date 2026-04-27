@@ -53,13 +53,14 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 ## Historical data routing policy (strict)
 
 1. Query subgraphs first for all historical/indexed requests.
-2. Use HyperRPC fallback only when at least one of these is true:
+2. Validate required entities and fields against the target subgraph schema and guide before declaring a gap.
+3. Use HyperRPC fallback only when at least one of these is true:
    - required entities or fields are not available in subgraph schema
    - indexing lag makes subgraph data stale for the requested range
    - query limits or endpoint instability block reliable retrieval
-3. Do not start with HyperRPC when subgraph data is available and fresh.
-4. HyperRPC fallback requires a valid Envio API key; if missing, report blocked fallback and return corrective action.
-5. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
+4. Do not start with HyperRPC when subgraph data is available and fresh.
+5. HyperRPC fallback requires a valid Envio API key; if missing, report blocked fallback and return corrective action.
+6. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
 
 ## Data source decision table
 
@@ -189,3 +190,4 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.
 7. Historical data routing is strict: subgraphs first; HyperRPC only with an explicit fallback reason.
 8. HyperRPC usage requires Envio API key credentials; when absent, do not attempt anonymous production flow.
+9. For subgraph tasks, validate field availability from the relevant `references/subgraphs/*-guide.md` and companion `.graphql` before guessing alternate entities.

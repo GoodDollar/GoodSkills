@@ -9,6 +9,14 @@ Companion to `goodcollective.graphql`.
 
 ---
 
+## Terminology: “claim” here is not daily UBI
+
+In this subgraph, **Claim** and **ClaimEvent** refer to **GoodCollective reward or pool claim flows**, not the protocol’s **daily UBI claim** from `UBIScheme` / `UBISchemeV2`.
+
+When a user says **“claim”** in normal GoodDollar product language, they almost always mean **claim daily UBI**. For that, use the GoodDollar Celo subgraph (`walletStats` / claim-related aggregates) and on-chain `claim` per `references/guides/claim.md` — do not answer “last N UBI claims” from GoodCollective **Claim** alone.
+
+---
+
 ## Entity Overview
 
 ### Core collective graph
@@ -19,7 +27,7 @@ Companion to `goodcollective.graphql`.
 
 ### Claim and support flow
 
-**Claim** and **ClaimEvent** — reward claim lifecycle and per-claim reward events.  
+**Claim** and **ClaimEvent** — GoodCollective **reward** claim lifecycle and per-claim reward events (not daily UBI from UBIScheme).  
 **SupportEvent** — support/donation change events across donor/collective links.
 
 ### Metadata and policy entities

@@ -36,6 +36,7 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/faucet.md` — Faucet gas top-up execution flow and preflight checks.
 - `references/guides/on-off-ramp.md` — stable-token ramp service flow into and out of G$.
 - `references/guides/invite-bounties.md` — verify and execute inviter-invitee bounty payouts.
+- `references/guides/migrate-fuse-staking-to-xdc-savings.md` — migrate Fuse governance stake to XDC Ubeswap savings.
 
 ## Subgraphs (indexed chain history)
 
@@ -105,6 +106,7 @@ When data is stored in mapping-like structures:
 - Faucet top-up tasks -> `references/guides/faucet.md`
 - On-/off-ramp service flow tasks -> `references/guides/on-off-ramp.md`
 - Invite bounty eligibility and payout tasks -> `references/guides/invite-bounties.md`
+- Fuse to XDC staking migration tasks -> `references/guides/migrate-fuse-staking-to-xdc-savings.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
 - Historical on-chain fetch when subgraph data is insufficient -> subgraphs first, then HyperRPC fallback via `references/guides/hypersync-hyperrpc.md`
 
@@ -149,6 +151,8 @@ GoodDollar / Mento:
 - `references/contracts/InvitesV2.abi.yaml`
 - `references/contracts/BuyGDCloneFactory.abi.yaml`
 - `references/contracts/BuyGDCloneV2.abi.yaml`
+- `references/contracts/GovernanceStakingV2.abi.yaml`
+- `references/contracts/GooddollarSavings.abi.yaml`
 - `references/contracts/UBISchemeV2.abi.yaml`
 - `references/contracts/MentoBroker.abi.yaml`
 - `references/contracts/MessagePassingBridge.abi.yaml`
@@ -168,6 +172,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 - `references/deep-researches/mento-reserve-economics.md`
 - `references/deep-researches/gooddao-daostack-surface.md`
 - `references/deep-researches/faucet-flows.md`
+- `references/deep-researches/fuse-to-xdc-staking-migration.md`
 
 ## Revert debugging quick map
 

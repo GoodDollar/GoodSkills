@@ -1,0 +1,265 @@
+# GooddollarSavings (Ubeswap XDC) — stake G$ and accrue G$ rewards with daily-rate and APR cap controls
+
+meta:
+  name: GooddollarSavings
+  version: "2"
+  source:
+    - https://raw.githubusercontent.com/Ubeswap/gooddollar-contracts/main/contracts/GooddollarSavings.sol
+    - https://raw.githubusercontent.com/Ubeswap/gooddollar-contracts/main/contracts/interfaces/IGooddollarSavings.sol
+  inherits:
+    - IGooddollarSavings
+    - Ownable
+    - ReentrancyGuard
+  note: >
+    Savings contract used for destination-chain staking on XDC. Supports direct `stake` and delegated
+    `stakeFor` flows. Rewards are bounded by pool rewardRate and optional maxRewardRatePerToken cap.
+    Reward top-up is permissionless via `addToReward`.
+  deployments:
+    mainnet:
+      xdc-mainnet:
+        networkId: 50
+        address: "0x3BeaaC603b445C7E8AdC46B3867404e1Bde9E047"
+  related:
+    - references/guides/migrate-fuse-staking-to-xdc-savings.md
+    - references/deep-researches/fuse-to-xdc-staking-migration.md
+
+rewardPerToken:
+  mutability: view
+  inputs: []
+  outputs:
+    - value: uint256
+
+earned:
+  mutability: view
+  inputs:
+    - account: address
+  outputs:
+    - amount: uint256
+
+totalSupply:
+  mutability: view
+  inputs: []
+  outputs:
+    - supply: uint256
+
+balanceOf:
+  mutability: view
+  inputs:
+    - account: address
+  outputs:
+    - balance: uint256
+
+getEffectiveRewardRate:
+  mutability: view
+  inputs: []
+  outputs:
+    - rate: uint256
+
+getDailyRewards:
+  mutability: view
+  inputs: []
+  outputs:
+    - daily: uint256
+
+periodFinish:
+  mutability: view
+  inputs: []
+  outputs:
+    - ts: uint256
+
+stake:
+  notes:
+    - "Caller stakes their own G$; requires prior ERC20 approval to savings contract."
+  mutability: nonpayable
+  access: anyone
+  inputs:
+    - amount: uint256
+  outputs: []
+  emits: [Staked]
+
+stakeFor:
+  notes:
+    - "Backend migration path: caller provides funds and assigns stake to recipient."
+    - "Recipient cannot be zero, contract address, or gdToken address."
+  mutability: nonpayable
+  access: anyone
+  inputs:
+    - amount: uint256
+    - recipient: address
+  outputs: []
+  emits: [StakedFor]
+
+withdraw:
+  mutability: nonpayable
+  access: anyone
+  inputs:
+    - amount: uint256
+  outputs: []
+  emits: [Withdrawn]
+
+getReward:
+  mutability: nonpayable
+  access: anyone
+  inputs: []
+  outputs: []
+  emits: [RewardPaid]
+
+compound:
+  notes:
+    - "Converts pending reward into additional stake in a single tx."
+  mutability: nonpayable
+  access: anyone
+  inputs: []
+  outputs: []
+  emits: [RewardPaid, Staked]
+
+exit:
+  notes:
+    - "Withdraws full principal and then claims pending rewards."
+  mutability: nonpayable
+  access: anyone
+  inputs: []
+  outputs: []
+
+addToReward:
+  notes:
+    - "Permissionless top-up that sweeps excess GD balance into remainingRewards."
+  mutability: nonpayable
+  access: anyone
+  inputs:
+    - reward: uint256
+  outputs: []
+  emits: [RewardAdded]
+
+setDailyRewards:
+  mutability: nonpayable
+  access: owner
+  inputs:
+    - _dailyRewards: uint256
+  outputs: []
+  emits: [DailyRewardsUpdated]
+
+setMaxRewardRatePerToken:
+  mutability: nonpayable
+  access: owner
+  inputs:
+    - _value: uint256
+  outputs: []
+  emits: [MaxRewardRateUpdated]
+
+recoverERC20:
+  notes:
+    - "Cannot recover the configured gdToken."
+  mutability: nonpayable
+  access: owner
+  inputs:
+    - tokenAddress: address
+    - tokenAmount: uint256
+  outputs: []
+  emits: [Recovered]
+
+gdToken:
+  mutability: view
+  inputs: []
+  outputs:
+    - token: address
+
+rewardRate:
+  mutability: view
+  inputs: []
+  outputs:
+    - rate: uint256
+
+maxRewardRatePerToken:
+  mutability: view
+  inputs: []
+  outputs:
+    - value: uint256
+
+remainingRewards:
+  mutability: view
+  inputs: []
+  outputs:
+    - value: uint256
+
+totalUnclaimedRewards:
+  mutability: view
+  inputs: []
+  outputs:
+    - value: uint256
+
+lastUpdateTime:
+  mutability: view
+  inputs: []
+  outputs:
+    - ts: uint256
+
+rewardPerTokenStored:
+  mutability: view
+  inputs: []
+  outputs:
+    - value: uint256
+
+userRewardPerTokenPaid:
+  mutability: view
+  inputs:
+    - account: address
+  outputs:
+    - value: uint256
+
+rewards:
+  mutability: view
+  inputs:
+    - account: address
+  outputs:
+    - value: uint256
+
+owner:
+  mutability: view
+  inputs: []
+  outputs:
+    - addr: address
+
+events:
+  RewardAdded:
+    indexed: []
+    data:
+      - reward: uint256
+  Staked:
+    indexed:
+      - user: address
+    data:
+      - amount: uint256
+  StakedFor:
+    indexed:
+      - staker: address
+      - recipient: address
+    data:
+      - amount: uint256
+  Withdrawn:
+    indexed:
+      - user: address
+    data:
+      - amount: uint256
+  RewardPaid:
+    indexed:
+      - user: address
+    data:
+      - reward: uint256
+  Recovered:
+    indexed: []
+    data:
+      - token: address
+      - amount: uint256
+      - receiver: address
+  MaxRewardRateUpdated:
+    indexed: []
+    data:
+      - newMaxRate: uint256
+  DailyRewardsUpdated:
+    indexed: []
+    data:
+      - rewardRate: uint256
+      - givenDailyRewards: uint256
+
+errors: {}

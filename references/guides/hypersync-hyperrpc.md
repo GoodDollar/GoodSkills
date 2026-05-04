@@ -54,9 +54,11 @@ These scripts avoid rediscovering HyperRPC wiring on every task. They require **
 - Default `EVENT_TOPIC0` matches `WhitelistedAdded(address)` on `IdentityV4`; override `EVENT_TOPIC0` for other events.
 - Production Celo defaults: `CONTRACT_ADDRESS` defaults to `Identity` from `production-celo` in [GoodProtocol deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`0xC361A6E67822a0EDc17D899227dd9FC50BD62F42`). If `HYPERRPC_URL` is unset, the script builds `https://celo.rpc.hypersync.xyz/<token>` from `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN`.
 - Optional env: `HYPERRPC_URL` (overrides token-based default), `CONTRACT_ADDRESS`, `LIMIT` (default `500`), `STEP` (default `2000`), `FROM_BLOCK` (default `0`), `TO_BLOCK` (default `latest`).
+- For event pulls, set `FROM_BLOCK` to the contract creation block (deployment block) instead of `0` to avoid unnecessary scan range and reduce latency.
 
 ```bash
 export HYPERRPC_API_TOKEN='<api-token>'
+export FROM_BLOCK='<contract-creation-block>'
 node scripts/fetch-whitelist-events-hyperrpc.mjs
 ```
 

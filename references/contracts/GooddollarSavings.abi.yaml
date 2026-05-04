@@ -15,9 +15,9 @@ meta:
     internal `_balances` (not an ERC20 staking share). Reward accrual uses `updateReward` each call:
     moves value from `remainingRewards` into `_totalSupply`-scaled `rewardPerTokenStored` and
     `totalUnclaimedRewards`, then snapshots `earned` per user. Pool-wide payout pace is `rewardRate`
-    (per second); per-staker APR is optionally ca+
-    pped via `maxRewardRatePerToken`. Accrual stops when
+    (per second); per-staker APR is optionally capped via `maxRewardRatePerToken`. Accrual stops when
     `_totalSupply == 0` or `remainingRewards == 0`.
+    This is the new staking contract in Fuse->XDC migration flows.
   deployments:
     mainnet:
       xdc-mainnet:

@@ -16,6 +16,7 @@ meta:
     Fuse governance staking contract where users stake G$ and receive staking shares (`sG$`) with
     GDAO-style rewards minted on reward withdrawal paths. `withdrawStake(0)` means full unstake.
     In deployment metadata this address is listed as GovernanceStakingV2 on Fuse production.
+    This is the old staking contract in Fuse->XDC migration flows.
   deployments:
     mainnet:
       fuse-production:

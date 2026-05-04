@@ -1,6 +1,6 @@
 # Fuse to XDC staking migration guide
 
-Use when the user wants to migrate an existing Fuse governance stake into the XDC Ubeswap GoodDollar savings contract.
+Use when the user wants to migrate an existing Fuse governance stake into the XDC Ubeswap GoodDollar savings contract. In this flow, Fuse `GovernanceStakingV2` is the old staking contract (source) and XDC `GooddollarSavings` is the new staking contract (destination).
 
 ## Goal
 

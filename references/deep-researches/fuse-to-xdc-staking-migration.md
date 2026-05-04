@@ -1,6 +1,6 @@
 # Why Fuse to XDC staking migration uses a staged backend flow
 
-This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction.
+This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction. In this context, Fuse `GovernanceStakingV2` is the old/source staking contract and XDC `GooddollarSavings` is the new/destination staking contract.
 
 ## Why this cannot be one-chain atomic
 

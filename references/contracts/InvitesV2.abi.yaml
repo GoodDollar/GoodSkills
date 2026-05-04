@@ -13,6 +13,20 @@ meta:
     whitelist on invitee (and inviter when present), and same-chain whitelisting via Identity
     getWhitelistedOnChainId. collectBounties and bountyFor pay invitee bountyToPay/2 and inviter
     bountyToPay when applicable. Campaign inviter is address(this) when inviter code maps to contract.
+  deployments:
+    mainnet:
+      production:
+        Invites:
+          networkId: 122
+          address: "0xCa2F09c3ccFD7aD5cB9276918Bd1868f2b922ea0"
+      production-celo:
+        Invites:
+          networkId: 42220
+          address: "0x36829D1Cda92FFF5782d5d48991620664FC857d3"
+      production-xdc:
+        Invites:
+          networkId: 50
+          address: "0x6bd698566632bf2e81e2278f1656CB24aAF06D2e"
   related:
     - references/deep-researches/inviter-invitee-reward-model.md
 

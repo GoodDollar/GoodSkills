@@ -12,6 +12,20 @@ meta:
     Almost every integration starts here. Writes are restricted to the DAO
     avatar. Reads are permissionless. Use getAddress(string) with the same
     key strings your deployment documented in releases/deployment.json.
+  deployments:
+    mainnet:
+      production:
+        NameService:
+          networkId: 122
+          address: "0xec6dcE387B1616a0c44fF2E4fA9E90e53Cf14eb0"
+      production-celo:
+        NameService:
+          networkId: 42220
+          address: "0x0F5dB7a64A6a64052693676CA898EC7F7A94FF4e"
+      production-xdc:
+        NameService:
+          networkId: 50
+          address: "0x1e5154Bf5e31FF56051bbd45958b879Fb7a290FE"
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/nameservice
     - https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json

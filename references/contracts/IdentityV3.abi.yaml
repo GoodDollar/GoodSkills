@@ -15,6 +15,23 @@ meta:
     isWhitelisted enforces authenticationPeriod against dateAuthenticated and status==1,
     with fallback to oldIdentity. getWhitelistedRoot returns the root address for a
     connected wallet or the wallet itself when directly whitelisted.
+  deployments:
+    mainnet:
+      production:
+        Identity:
+          networkId: 122
+          address: "0x2F9C28de9e6d44b71B91b8BA337A5D82e308E7BE"
+        IdentityOld:
+          networkId: 122
+          address: "0xFa8d865A962ca8456dF331D78806152d3aC5B84F"
+      production-celo:
+        Identity:
+          networkId: 42220
+          address: "0xC361A6E67822a0EDc17D899227dd9FC50BD62F42"
+      production-xdc:
+        Identity:
+          networkId: 50
+          address: "0x27a4a02C9ed591E1a86e2e5D05870292c34622C9"
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/identity
     - https://docs.gooddollar.org/user-guides/connect-another-wallet-address-to-identity

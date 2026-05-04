@@ -7,6 +7,20 @@ meta:
   note: >
     Bridge implementation that burns source tokens and mints destination tokens,
     transporting requests through Axelar or LayerZero.
+  deployments:
+    mainnet:
+      production:
+        MpbBridge:
+          networkId: 122
+          address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
+      production-celo:
+        MpbBridge:
+          networkId: 42220
+          address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
+      production-xdc:
+        MpbBridge:
+          networkId: 50
+          address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
   related:
     - references/guides/bridge.md
 

@@ -14,6 +14,16 @@ meta:
     configured exchangeProvider + exchangeId. Reverts use require strings in
     Broker.sol plus TradingLimits library checks ("amountOutMin not met",
     "amountInMax exceeded", trading-limit errors).
+  deployments:
+    mainnet:
+      production-celo:
+        MentoBroker:
+          networkId: 42220
+          address: "0x88de45906D4F5a57315c133620cfa484cB297541"
+      production-xdc:
+        MentoBroker:
+          networkId: 50
+          address: "0x88de45906D4F5a57315c133620cfa484cB297541"
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/mentobroker
     - references/guides/swap.md

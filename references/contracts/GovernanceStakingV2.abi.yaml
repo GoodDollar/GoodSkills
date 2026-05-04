@@ -19,9 +19,10 @@ meta:
     This is the old staking contract in Fuse->XDC migration flows.
   deployments:
     mainnet:
-      fuse-production:
-        networkId: 122
-        address: "0xB7C3e738224625289C573c54d402E9Be46205546"
+      production:
+        GovernanceStakingV2:
+          networkId: 122
+          address: "0xB7C3e738224625289C573c54d402E9Be46205546"
   related:
     - references/guides/migrate-fuse-staking-to-xdc-savings.md
     - references/deep-researches/fuse-to-xdc-staking-migration.md

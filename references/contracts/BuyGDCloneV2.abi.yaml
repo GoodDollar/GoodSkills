@@ -8,6 +8,12 @@ meta:
   note: >
     Clone implementation used by BuyGDCloneFactory for deterministic per-owner swap executors.
     Supports CELO and cUSD flows, with cUSD route selection between Uniswap and Mento when configured.
+  deployments:
+    mainnet:
+      production-celo:
+        BuyGDFactoryV2:
+          networkId: 42220
+          address: "0x1F60C4C7037C6766924A43666B781ED1479587a2"
   related:
     - references/deep-researches/on-off-ramp-service.md
     - references/guides/on-off-ramp.md

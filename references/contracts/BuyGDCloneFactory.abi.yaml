@@ -6,6 +6,15 @@ meta:
   note: >
     Deterministic clone factory for BuyGDCloneV2 and DonateGDClone. Used to create per-owner
     executors and optional create+swap flows for ramp services.
+  deployments:
+    mainnet:
+      production-celo:
+        BuyGDFactoryV2:
+          networkId: 42220
+          address: "0x1F60C4C7037C6766924A43666B781ED1479587a2"
+        BuyGDFactory:
+          networkId: 42220
+          address: "0x00e533B7d6255D05b7f15034B1c989c21F51b91C"
   related:
     - references/deep-researches/on-off-ramp-service.md
     - references/guides/on-off-ramp.md

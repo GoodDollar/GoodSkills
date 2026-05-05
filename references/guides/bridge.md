@@ -26,10 +26,10 @@ Bridge with deterministic pre-checks: bridge support, allowance, amount, fee.
 ## Execution flow
 
 1. Resolve source bridge and token addresses for the network pair.
-2. Run bridge capability checks for the destination network when ABI provides this.
+2. Run bridge eligibility checks for sender and amount via `canBridge(from, amount)`.
 3. Read allowance and approve bridge spender when required.
-4. Estimate fee if the bridge implementation requires message fee input.
-5. Send bridge transaction with explicit min or guard values when supported.
+4. Resolve transport mode (`LZ` or `AXELAR`) and estimate required native fee.
+5. Send bridge transaction with nonzero `msg.value` and explicit transport method.
 6. Return tx hash and normalized bridge parameters.
 
 ## Deterministic snippet
@@ -52,19 +52,23 @@ const token = new ethers.Contract(
 const bridge = new ethers.Contract(
   process.env.BRIDGE_ADDRESS,
   [
-    "function canBridge(uint32) view returns (bool)",
-    "function bridgeTo(uint32,address,uint256) payable",
+    "function canBridge(address,uint256) view returns (bool,string)",
+    "function toLzChainId(uint256) view returns (uint16)",
+    "function estimateSendFee(uint16,address,address,uint256,bool,bytes) view returns (uint256,uint256)",
+    "function bridgeToWithLz(address,uint256,uint256,bytes) payable",
+    "function bridgeToWithAxelar(address,uint256,uint256,address) payable",
   ],
   signer,
 );
 
 const owner = await signer.getAddress();
-const dstEid = Number(process.env.DST_EID);
+const targetChainId = Number(process.env.TARGET_CHAIN_ID);
 const recipient = process.env.RECIPIENT;
 const amount = ethers.parseUnits(process.env.AMOUNT, Number(process.env.DECIMALS));
+const transport = (process.env.BRIDGE_TRANSPORT || "LZ").toUpperCase();
 
-const allowed = await bridge.canBridge(dstEid);
-if (!allowed) throw new Error("Destination chain is not bridge-enabled");
+const [canBridge, reason] = await bridge.canBridge(owner, amount);
+if (!canBridge) throw new Error(`Bridge blocked: ${reason}`);
 
 const allowance = await token.allowance(owner, process.env.BRIDGE_ADDRESS);
 if (allowance < amount) {
@@ -72,14 +76,36 @@ if (allowance < amount) {
   await approveTx.wait();
 }
 
-const tx = await bridge.bridgeTo(dstEid, recipient, amount, { value: 0n });
+let tx;
+
+if (transport === "LZ") {
+  const dstEid = await bridge.toLzChainId(targetChainId);
+  if (dstEid === 0) throw new Error("Unsupported target chain for LayerZero");
+
+  const adapterParams = process.env.LZ_ADAPTER_PARAMS || "0x";
+  const [nativeFee] = await bridge.estimateSendFee(dstEid, owner, recipient, amount, false, adapterParams);
+  if (nativeFee <= 0n) throw new Error("Estimated LayerZero fee is zero");
+
+  tx = await bridge.bridgeToWithLz(recipient, targetChainId, amount, adapterParams, {
+    value: nativeFee,
+  });
+} else if (transport === "AXELAR") {
+  const nativeFee = ethers.parseEther(process.env.AXELAR_FEE_ETH || "0.01");
+  tx = await bridge.bridgeToWithAxelar(recipient, targetChainId, amount, owner, {
+    value: nativeFee,
+  });
+} else {
+  throw new Error("Unsupported BRIDGE_TRANSPORT. Use LZ or AXELAR");
+}
+
 const receipt = await tx.wait();
 console.log(
   JSON.stringify(
     {
       txHash: receipt.hash,
       sourceBridge: process.env.BRIDGE_ADDRESS,
-      destinationEid: dstEid,
+      targetChainId,
+      transport,
       recipient,
       amount: amount.toString(),
     },
@@ -91,6 +117,6 @@ console.log(
 
 ## Failure handling
 
-- unsupported destination: stop and return destination and source bridge
-- fee too low: re-estimate and retry with user confirmation
+- unsupported destination: return targetChainId, bridge address, and transport mode
+- fee too low (`LZ_FEE` or underpriced Axelar fee): re-estimate and retry with user confirmation
 - approval or balance issue: return required delta

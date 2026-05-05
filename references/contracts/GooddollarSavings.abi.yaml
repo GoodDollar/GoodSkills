@@ -24,8 +24,8 @@ meta:
         networkId: 50
         address: "0x3BeaaC603b445C7E8AdC46B3867404e1Bde9E047"
   related:
-    - references/guides/migrate-fuse-staking-to-xdc-savings.md
-    - references/deep-researches/fuse-to-xdc-staking-migration.md
+    - references/guides/migrate-fuse-staking-to-celo-savings.md
+    - references/deep-researches/fuse-to-celo-staking-migration.md
 
 rewardPerToken:
   notes:

@@ -256,6 +256,7 @@ estimateSendFee:
     - "Transport fee preflight for LZ path."
     - "Builds payload with request id set to 0 for estimation."
     - "Returns (0,0) on endpoint estimation failure in handler implementation."
+    - "_normalizedAmount must match BridgeHelperLibrary.normalizeFromTokenTo18Decimals burned raw amount using native token decimals on the outbound chain."
   mutability: view
   inputs:
     - _dstChainId: uint16

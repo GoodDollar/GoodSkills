@@ -32,10 +32,24 @@ Bridge with deterministic pre-checks: bridge support, allowance, amount, fee.
 5. Send bridge transaction with nonzero `msg.value` and explicit transport method.
 6. Return tx hash and normalized bridge parameters.
 
+## LayerZero fee and `estimateSendFee`
+
+`bridgeToWithLz` burns the G$ **raw** amount in the source token’s `decimals()`. Inside the contract, LayerZero payload and `estimateSendFee` use a value normalized to **18 decimals** the same way as [GoodBridge `BridgeHelperLibrary.normalizeFromTokenTo18Decimals`](https://github.com/GoodDollar/GoodBridge/blob/master/packages/bridge-contracts/contracts/messagePassingBridge/BridgeHelperLibrary.sol): if `decimals < 18`, multiply by `10^(18 - decimals)`; if `decimals > 18`, divide by `10^(decimals - 18)`; otherwise use the raw amount.
+
+`canBridge(from, amount)` is evaluated on the **raw** burn amount, not the normalized value.
+
+Read `decimals()` from the source G$ contract when building off-chain fee quotes so you stay aligned if a deployment differs.
+
 ## Deterministic snippet
 
 ```js
 import { ethers } from "ethers";
+
+function normalizedForLzFee(raw, tokenDecimals) {
+  if (tokenDecimals < 18) return raw * 10n ** BigInt(18 - tokenDecimals);
+  if (tokenDecimals > 18) return raw / 10n ** BigInt(tokenDecimals - 18);
+  return raw;
+}
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
@@ -43,6 +57,7 @@ const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const token = new ethers.Contract(
   process.env.GOODDOLLAR_ADDRESS,
   [
+    "function decimals() view returns (uint8)",
     "function allowance(address,address) view returns (uint256)",
     "function approve(address,uint256) returns (bool)",
   ],
@@ -66,6 +81,8 @@ const targetChainId = Number(process.env.TARGET_CHAIN_ID);
 const recipient = process.env.RECIPIENT;
 const amount = ethers.parseUnits(process.env.AMOUNT, Number(process.env.DECIMALS));
 const transport = (process.env.BRIDGE_TRANSPORT || "LZ").toUpperCase();
+const tokenDecimals = await token.decimals();
+const normalizedForLzEstimate = normalizedForLzFee(amount, Number(tokenDecimals));
 
 const [canBridge, reason] = await bridge.canBridge(owner, amount);
 if (!canBridge) throw new Error(`Bridge blocked: ${reason}`);
@@ -83,7 +100,14 @@ if (transport === "LZ") {
   if (dstEid === 0) throw new Error("Unsupported target chain for LayerZero");
 
   const adapterParams = process.env.LZ_ADAPTER_PARAMS || "0x";
-  const [nativeFee] = await bridge.estimateSendFee(dstEid, owner, recipient, amount, false, adapterParams);
+  const [nativeFee] = await bridge.estimateSendFee(
+    dstEid,
+    owner,
+    recipient,
+    normalizedForLzEstimate,
+    false,
+    adapterParams,
+  );
   if (nativeFee <= 0n) throw new Error("Estimated LayerZero fee is zero");
 
   tx = await bridge.bridgeToWithLz(recipient, targetChainId, amount, adapterParams, {
@@ -107,7 +131,9 @@ console.log(
       targetChainId,
       transport,
       recipient,
-      amount: amount.toString(),
+      rawAmount: amount.toString(),
+      tokenDecimals: Number(tokenDecimals),
+      normalizedAmountForLz: normalizedForLzEstimate.toString(),
     },
     null,
     2,

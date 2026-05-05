@@ -30,10 +30,17 @@ Canonical sources:
 - [GoodProtocol deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json)
 - [Fuse explorer contract (GovernanceStakingV2 address)](https://explorer.fuse.io/address/0xB7C3e738224625289C573c54d402E9Be46205546?tab=contract)
 - [Ubeswap gooddollar-contracts](https://github.com/Ubeswap/gooddollar-contracts)
+- [GoodBridge bridge helper normalization](https://github.com/GoodDollar/GoodBridge/blob/master/packages/bridge-contracts/contracts/messagePassingBridge/BridgeHelperLibrary.sol)
+
+## Token decimals and `MessagePassingBridge` LZ fees
+
+Production deployments checked on-chain: Fuse `GoodDollar` uses **2** decimals and Celo `GoodDollar` uses **18**. Fuse `GovernanceStakingV2` (sG$) uses **2** decimals. Resolve `decimals()` from each live token in your runner so you stay correct if deployments change.
+
+On the Fuse `MpbBridge` (`MessagePassingBridge`), `canBridge(from, amount)` and `bridgeToWithLz(..., amount, ...)` use the **raw G$ burn amount** in source token decimals. Off-chain **`estimateSendFee`’s `_normalizedAmount` argument** must match what the contract builds internally: **`normalizeFromTokenTo18Decimals(amount, IERC20(nativeToken()).decimals())`** ([`BridgeHelperLibrary`](https://github.com/GoodDollar/GoodBridge/blob/master/packages/bridge-contracts/contracts/messagePassingBridge/BridgeHelperLibrary.sol)). Format displayed amounts per chain (`formatUnits`/UI) using each chain’s G$ decimals.
 
 ## Execution flow
 
-1. Confirm the user granted sufficient allowance on Fuse G$ to the backend execution wallet if your migration path requires a pull-model transfer.
+1. Confirm allowance for whichever asset your flow spends first (for example sG$ allowance to the backend on Fuse `GovernanceStakingV2`, or Fuse G$ allowance if you pull G$ directly), before any transfers or bridges.
 2. Verify current stake state on Fuse before closing:
    - stake token balance
    - withdrawable stake amount

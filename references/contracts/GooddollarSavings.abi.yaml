@@ -1,4 +1,4 @@
-# GooddollarSavings (Ubeswap XDC) — stake G$ and accrue G$ rewards with daily-rate and APR cap controls
+# GooddollarSavings (Ubeswap) — stake G$ and accrue G$ rewards with daily-rate and APR cap controls
 
 meta:
   name: GooddollarSavings
@@ -11,13 +11,13 @@ meta:
     - Ownable
     - ReentrancyGuard
   note: >
-    Savings contract used for destination-chain staking on XDC. Principal is plain staked G$ in
+    Savings contract used for destination-chain staking. Principal is plain staked G$ in
     internal `_balances` (not an ERC20 staking share). Reward accrual uses `updateReward` each call:
     moves value from `remainingRewards` into `_totalSupply`-scaled `rewardPerTokenStored` and
     `totalUnclaimedRewards`, then snapshots `earned` per user. Pool-wide payout pace is `rewardRate`
     (per second); per-staker APR is optionally capped via `maxRewardRatePerToken`. Accrual stops when
     `_totalSupply == 0` or `remainingRewards == 0`.
-    This is the new staking contract in Fuse->XDC migration flows.
+    This is the destination savings contract interface in Fuse->CELO migration flows.
   deployments:
     mainnet:
       xdc-mainnet:

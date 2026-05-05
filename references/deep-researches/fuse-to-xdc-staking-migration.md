@@ -1,10 +1,10 @@
-# Why Fuse to XDC staking migration uses a staged backend flow
+# Why Fuse to CELO staking migration uses a staged backend flow
 
-This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction. In this context, Fuse `GovernanceStakingV2` is the old/source staking contract and XDC `GooddollarSavings` is the new/destination staking contract.
+This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction. In this context, Fuse `GovernanceStakingV2` is the old/source staking contract and `GooddollarSavings` is the destination staking contract interface.
 
 ## Why this cannot be one-chain atomic
 
-Fuse governance staking and XDC savings live on different chains, so the system cannot atomically close and reopen stake in one EVM transaction. Cross-chain migration is asynchronous by design and must tolerate timing gaps between source completion and destination finalization.
+Fuse governance staking and CELO destination savings live on different chains, so the system cannot atomically close and reopen stake in one EVM transaction. Cross-chain migration is asynchronous by design and must tolerate timing gaps between source completion and destination finalization.
 
 ## Why user allowance is first
 
@@ -16,7 +16,7 @@ The source staking position is the canonical balance record on Fuse. The migrati
 
 ## Why bridge finalization must be explicit
 
-Bridge transfers are eventually consistent across chains. The destination stake step must only run after the bridged G$ is confirmed on XDC. This avoids phantom staking attempts and preserves deterministic accounting.
+Bridge transfers are eventually consistent across chains. The destination stake step must only run after the bridged G$ is confirmed on CELO. This avoids phantom staking attempts and preserves deterministic accounting.
 
 ## Why destination uses `stakeFor`
 
@@ -27,11 +27,11 @@ Ubeswap `GooddollarSavings` supports `stakeFor(amount, recipient)`, which allows
 - partial migration from source unstake or bridge limit constraints
 - stuck-in-transit bridge messages delaying destination staking
 - stale assumptions about contract addresses across networks
-- reward expectation mismatch when moving from Fuse governance staking mechanics to XDC savings mechanics
+- reward expectation mismatch when moving from Fuse governance staking mechanics to CELO savings mechanics
 
 ## Contract/source map
 
 - Fuse staking family (GoodProtocol): [`GovernanceStaking.sol`](https://github.com/GoodDollar/GoodProtocol/blob/master/contracts/governance/GovernanceStaking.sol)
 - Fuse deployment mapping: [`deployment.json`](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`production.GovernanceStakingV2`)
-- XDC savings implementation (Ubeswap): [`GooddollarSavings.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol)
+- Destination savings implementation (Ubeswap): [`GooddollarSavings.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol)
 - Ubeswap contracts repository: [Ubeswap/gooddollar-contracts](https://github.com/Ubeswap/gooddollar-contracts)

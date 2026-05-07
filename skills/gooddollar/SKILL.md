@@ -6,6 +6,7 @@ description: >
   stream, and identity tasks. Prefer GoodDocs: https://docs.gooddollar.org/
 metadata:
   version: 1.0.0
+license: MIT
 ---
 
 # GoodDollar Skill Pack

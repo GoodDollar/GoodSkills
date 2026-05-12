@@ -28,3 +28,8 @@ Use `_meta { block { number } }` to detect how far behind indexing is when debug
     hasIndexingErrors
   }
 }
+```
+
+## When subgraphs are not enough
+
+If the subgraph cannot answer the question (missing entities or fields, or stale indexing per `_meta`), switch to the decision rules in `references/guides/hypersync-hyperrpc.md`. When **HyperSync** is the best fit and no Envio API token is available in the environment, **ask the user directly** for `ENVIO_API_TOKEN` (or the token your HyperSync client expects) before running large scans; do not silently use anonymous quota as a stand-in.

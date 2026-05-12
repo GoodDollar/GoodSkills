@@ -37,13 +37,13 @@ All task-specific instructions live under `references/guides/`.
 - `references/guides/faucet.md` — Faucet gas top-up execution flow and preflight checks.
 - `references/guides/on-off-ramp.md` — stable-token ramp service flow into and out of G$.
 - `references/guides/invite-bounties.md` — verify and execute inviter-invitee bounty payouts.
-- `references/guides/migrate-fuse-staking-to-xdc-savings.md` — migrate Fuse governance stake to XDC Ubeswap savings.
+- `references/guides/migrate-fuse-staking-to-celo-savings.md` — migrate Fuse governance stake to CELO savings flow.
 
 ## Subgraphs (indexed chain history)
 
 Use this folder with the same pattern as the protocol subgraph references: one `*-guide.md` plus one companion `.graphql` per deployment.
 
-For historical on-chain data fetching, subgraphs are mandatory first choice. Use HyperRPC only as explicit fallback via `references/guides/hypersync-hyperrpc.md`.
+For historical on-chain data, **start with the subgraph**: confirm the deployment covers the question (entities and fields in the guide, freshness via `_meta`). If the subgraph does not work for the request—missing schema coverage, stale or lagging indexing, query limits, or endpoint errors—**then** move to **HyperSync** or **HyperRPC** using `references/guides/hypersync-hyperrpc.md`.
 
 - `references/subgraphs/_query-patterns.md` — cross-cutting query discipline.
 - `references/subgraphs/reserve-celo-guide.md` + `references/subgraphs/reserve-celo.graphql` — reserve pricing and swap history.
@@ -56,20 +56,21 @@ For Superfluid protocol subgraphs (streams, pools, vesting schedulers), see [Sup
 
 1. Query subgraphs first for all historical/indexed requests.
 2. Validate required entities and fields against the target subgraph schema and guide before declaring a gap.
-3. Use HyperRPC fallback only when at least one of these is true:
+3. Use **HyperSync** or **HyperRPC** fallback only when at least one of these is true:
    - required entities or fields are not available in subgraph schema
    - indexing lag makes subgraph data stale for the requested range
    - query limits or endpoint instability block reliable retrieval
-4. Do not start with HyperRPC when subgraph data is available and fresh.
-5. HyperRPC fallback requires a valid Envio API key; if missing, report blocked fallback and return corrective action.
-6. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
+4. Do not start with HyperSync or HyperRPC when subgraph data is available and fresh.
+5. HyperRPC fallback requires a valid Envio API key; if missing, **explicitly ask the user** to provide `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` (or paste a full `HYPERRPC_URL`); do not treat anonymous HyperRPC as production.
+6. When **HyperSync** is the best option for the query and no Envio API token is available (`ENVIO_API_TOKEN` or equivalent per `references/guides/hypersync-hyperrpc.md`), **explicitly ask the user** to provide the token before proceeding; do not silently substitute anonymous HyperSync usage.
+7. When fallback is used, report reason explicitly (schema gap, lag, or reliability issue).
 
 ## Data source decision table
 
 | Query type | Primary source | Secondary source | Notes |
 |---|---|---|---|
 | Current on-chain state (latest balances, allowances, config, flags, view calls) | RPC | None | Use direct contract RPC reads for latest state. |
-| Historical indexed entity data (time-series, aggregates, protocol entities, event-derived analytics) | Subgraph | HyperSync/HyperRPC | Subgraph is mandatory first choice. |
+| Historical indexed entity data (time-series, aggregates, protocol entities, event-derived analytics) | Subgraph | HyperSync/HyperRPC | Prefer subgraph first; fall back when it cannot answer. |
 | Historical raw on-chain data when subgraph is missing fields/entities or stale | HyperSync | HyperRPC | Prefer HyperSync for bulk scans and data pipelines. |
 | Historical data for existing JSON-RPC integrations | HyperRPC | HyperSync | Use HyperRPC when strict JSON-RPC compatibility is required. |
 
@@ -79,6 +80,7 @@ Decision rule:
 2. If request is historical/indexed -> query subgraph first.
 3. If subgraph cannot satisfy request -> fallback to HyperSync or HyperRPC per compatibility and scale needs.
 4. HyperRPC fallback requires Envio API key credentials.
+5. HyperSync client usage requires an Envio API token; if HyperSync is chosen and the token is missing, explicitly ask the user to provide it (see `references/guides/hypersync-hyperrpc.md`).
 
 ## Mapping data retrieval rule
 
@@ -107,9 +109,20 @@ When data is stored in mapping-like structures:
 - Faucet top-up tasks -> `references/guides/faucet.md`
 - On-/off-ramp service flow tasks -> `references/guides/on-off-ramp.md`
 - Invite bounty eligibility and payout tasks -> `references/guides/invite-bounties.md`
-- Fuse to XDC staking migration tasks -> `references/guides/migrate-fuse-staking-to-xdc-savings.md`
+- Fuse to CELO staking migration tasks -> `references/guides/migrate-fuse-staking-to-celo-savings.md`
 - Indexed history, analytics, or GraphQL against GoodDollar subgraphs -> `references/subgraphs/_query-patterns.md`
-- Historical on-chain fetch when subgraph data is insufficient -> subgraphs first, then HyperRPC fallback via `references/guides/hypersync-hyperrpc.md`
+- Historical on-chain fetch when subgraph data is insufficient -> subgraphs first, then HyperSync or HyperRPC per `references/guides/hypersync-hyperrpc.md`; if HyperSync is best and `ENVIO_API_TOKEN` is missing, ask the user for it explicitly.
+
+## Ambiguous prompts and incomplete inputs
+
+Stop and **ask the user** whenever the task is underspecified or required facts are missing. List what you need in short, concrete questions (for example chain, contract, address, amount, account, RPC or signer access, time or block range, prior tx hash, approval scope).
+
+- **Ambiguous** means the goal, environment, contract surface, or acceptance criteria are not clear enough to choose a safe path.
+- **Incomplete** means you lack inputs that would change what you build, call, or sign next.
+
+**Do not invent** chain, address, amount, or policy details that affect correctness, funds, or eligibility. For **information-only** work you may state a single explicit assumption, label it, and ask the user to confirm or correct it before going further.
+
+**Execution work** (writing or editing runnable code, sending transactions, migrations, or anything that can move funds or alter on-chain state) has **no guessing**: settle every required input with the user, then implement or run.
 
 ## Execution rules
 
@@ -173,7 +186,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 - `references/deep-researches/mento-reserve-economics.md`
 - `references/deep-researches/gooddao-daostack-surface.md`
 - `references/deep-researches/faucet-flows.md`
-- `references/deep-researches/fuse-to-xdc-staking-migration.md`
+- `references/deep-researches/fuse-to-celo-staking-migration.md`
 
 ## Revert debugging quick map
 
@@ -194,7 +207,8 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
 5. Prefer GoodDocs and deployment.json over assumptions.
 6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.
-7. Historical data routing is strict: subgraphs first; HyperRPC only with an explicit fallback reason.
-8. HyperRPC usage requires Envio API key credentials; when absent, do not attempt anonymous production flow.
-9. For subgraph tasks, validate field availability from the relevant `references/subgraphs/*-guide.md` and companion `.graphql` before guessing alternate entities.
-10. For local shells repeating HyperRPC log pulls (for example last N whitelist events), run `scripts/fetch-whitelist-events-hyperrpc.mjs` per `references/guides/hypersync-hyperrpc.md` instead of re-deriving JSON-RPC setup each time; the script defaults to production Celo Identity and HyperRPC URL composition from `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` unless overridden. HyperSync remains a separate client install path documented in the same guide.
+7. Historical data routing is strict: subgraphs first; HyperSync or HyperRPC only with an explicit fallback reason.
+8. HyperRPC usage requires Envio API key credentials; when absent, **explicitly ask the user** for `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` (or a full `HYPERRPC_URL`) and do not attempt anonymous production flow.
+9. When HyperSync is the best historical-data path and no Envio API token is available, explicitly ask the user to provide `ENVIO_API_TOKEN` (or the token your client expects) before continuing; see `references/guides/hypersync-hyperrpc.md`.
+10. For subgraph tasks, validate field availability from the relevant `references/subgraphs/*-guide.md` and companion `.graphql` before guessing alternate entities.
+11. For local shells repeating HyperRPC log pulls (for example last N whitelist events), from the **GoodSkills repository root** run `scripts/fetch-whitelist-events-hyperrpc.mjs` per `references/guides/hypersync-hyperrpc.md` instead of re-deriving JSON-RPC setup each time; that script ships with **defaults for production Celo** (HyperRPC host + `Identity` contract from `deployment.json`) and URL composition from `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` unless you override `CONTRACT_ADDRESS` / `HYPERRPC_URL`. HyperSync remains a separate client install path documented in the same guide.

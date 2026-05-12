@@ -37,16 +37,23 @@ Use this guide when the task is high-volume historical blockchain data fetch (ev
 - Add API key in endpoint URL as documented by Envio.
 - HyperRPC token pattern example from docs: `https://<chain>.rpc.hypersync.xyz/<api-token>`
 
+## Agents: Envio API token when HyperSync is the best option
+
+After you decide **HyperSync** is the right tool for the user query (for example large historical scans or pipeline-scale log pulls where subgraphs are insufficient), check for a usable Envio credential in the execution environment (`ENVIO_API_TOKEN` for `@envio-dev/hypersync-client`, or the token Envio documents for your chosen URL pattern).
+
+If **no** Envio API token is available and you cannot complete the HyperSync path without it, **stop and explicitly ask the user** to provide an Envio API token (name the env var you need, typically `ENVIO_API_TOKEN`). Do not silently rely on anonymous or heavily rate-limited access as a substitute when HyperSync was already identified as the best approach.
+
 ## Practical use in this repo
 
 - Keep subgraphs as first option for indexed protocol entities.
 - Use HyperSync/HyperRPC when subgraph coverage is missing, stale, or insufficient for bulk historical pulls.
+- When an agent chooses **HyperSync** as the best path and no Envio API token is available, follow **Agents: Envio API token when HyperSync is the best option** in this file and ask the user for `ENVIO_API_TOKEN` before proceeding.
 - Keep contract truth and addresses from GoodProtocol, deployment.json, and GoodDocs.
 - For implementation details (client setup, query structure, supported methods), follow the Envio docs links above directly.
 
 ## Prebuilt scripts (developers and local agents)
 
-These scripts avoid rediscovering HyperRPC wiring on every task. They require **Node.js 18 or newer** (global `fetch`).
+These scripts avoid rediscovering HyperRPC wiring on every task. They require **Node.js 18 or newer** (global `fetch`). Paths like `scripts/...` are relative to the **GoodSkills repository root** (the directory that contains both `skills/` and `scripts/`), not relative to `skills/gooddollar/` alone.
 
 ### Last N Identity `WhitelistedAdded` logs via HyperRPC
 
@@ -57,6 +64,7 @@ These scripts avoid rediscovering HyperRPC wiring on every task. They require **
 - For event pulls, set `FROM_BLOCK` to the contract creation block (deployment block) instead of `0` to avoid unnecessary scan range and reduce latency.
 
 ```bash
+cd /path/to/GoodSkills
 export HYPERRPC_API_TOKEN='<api-token>'
 export FROM_BLOCK='<contract-creation-block>'
 node scripts/fetch-whitelist-events-hyperrpc.mjs

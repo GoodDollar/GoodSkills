@@ -7,6 +7,7 @@ meta:
   note: >
     Bridge implementation that burns source tokens and mints destination tokens,
     transporting requests through Axelar or LayerZero.
+    Cross-chain transport uses msg.value on the source (LayerZero estimateSendFee path, Axelar gas prepay); destination mint applies bridgeFees bps to the delivered G$ amount. See references/guides/bridge.md "Bridge fee context".
   deployments:
     mainnet:
       production:

@@ -13,7 +13,7 @@ Primary local ABI reference for MessagePassingBridge flow:
 
 ## Goal
 
-Bridge with deterministic pre-checks: bridge support, allowance, amount, fee.
+Bridge with deterministic pre-checks: bridge support, allowance, amount, cross-chain transport fee, and delivered amount after destination limits and protocol fee.
 
 ## Required inputs
 
@@ -31,6 +31,19 @@ Bridge with deterministic pre-checks: bridge support, allowance, amount, fee.
 4. Resolve transport mode (`LZ` or `AXELAR`) and estimate required native fee.
 5. Send bridge transaction with nonzero `msg.value` and explicit transport method.
 6. Return tx hash and normalized bridge parameters.
+
+## Bridge fee context
+
+Two different costs show up on `MessagePassingBridge`; do not conflate them.
+
+**1. Cross-chain transport fee (native gas token on the source chain)**  
+Paid as **`msg.value`** on the outbound call. The contract reverts with **`MISSING_FEE`** if `msg.value` is zero. On the **LayerZero** path the contract compares your `msg.value` to **`estimateSendFee`** and reverts **`LZ_FEE(required, sent)`** if it is too low. Use the same **normalized** amount for `estimateSendFee` as the contract uses internally (see the next section). On the **Axelar** path you still attach native value for Gas Service / execution; there is no single `estimateSendFee` analogue in the snippet—follow Envio/Axelar docs or simulate the exact call for production amounts.
+
+**2. Protocol fee on minted G$ (destination chain, basis points)**  
+When the message is executed on the **destination** chain, the bridge applies **`bridgeFees`** (min / max / fee bps via `setBridgeFees`) and mints the recipient **minus** that fee; the fee portion is minted to **`feeRecipient`** when it is non-zero (see `bridgeFees()`, `feeRecipient`, and `_takeFee` / `ExecutedTransfer` in `references/contracts/MessagePassingBridge.abi.yaml`). This is **not** the LayerZero relayer fee; it is a separate cut on the **token amount** delivered on arrival.
+
+**3. Optional OFT / LayerZero token-adapter path**  
+If the flow uses the GoodDollar OFT-style adapter instead of `MessagePassingBridge`, fee quoting follows **`quoteSend`** / **`MessagingFee`** on that contract; see `references/contracts/GoodDollarOFTAdapter.abi.yaml`.
 
 ## Axelar vs LayerZero on GoodDollar deployments
 
@@ -150,3 +163,4 @@ console.log(
 - unsupported destination: return targetChainId, bridge address, and transport mode
 - fee too low (`LZ_FEE` or underpriced Axelar fee): re-estimate and retry with user confirmation
 - approval or balance issue: return required delta
+- credited G$ on destination is reduced by **`bridgeFees`** (bps / min / max); that is independent of the source **`msg.value`** transport fee

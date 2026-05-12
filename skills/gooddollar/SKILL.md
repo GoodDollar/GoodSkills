@@ -138,7 +138,7 @@ Stop and **ask the user** whenever the task is underspecified or required facts 
 - Claim: verify identity whitelist status before `claim()`.
 - Save or stake: verify balance and allowance before `stake()`.
 - Swap: fetch quote, apply slippage bounds, verify allowance; confirm Mento deployment for the active chain per GoodDocs.
-- Bridge (MessagePassingBridge): verify `canBridge` on the destination chain, approve the bridge as spender, estimate native fee via GoodServer, respect documented limits.
+- Bridge (MessagePassingBridge): on the **source** chain approve G$ to the bridge; optionally preflight `canBridge(from, amount)` on that same contract (outbound `_bridgeTo` does not call it internally). For LZ use `estimateSendFee` with the **normalized** burn amount per `references/guides/bridge.md`, then `bridgeToWithLz` with nonzero `msg.value`. Respect `isClosed`, `LZ_FEE`, and `UNSUPPORTED_CHAIN`. **Destination** mint applies `_enforceLimits` and can still revert. Use **Axelar** only when `toAxelarChainId` returns a route (implementation maps 1, 5, 42220, 44787); for Fuse or XDC style targets prefer LZ unless mapping is extended on-chain.
 - Bridge (OFT adapter path): verify peer wiring and `quoteSend` fee data.
 - Stream: confirm Celo (or documented Superfluid network) and correct Super Token and forwarder or host addresses.
 - Identity: resolve Identity from NameService; remember connected addresses do not multiply daily claims ([connect wallet guide](https://docs.gooddollar.org/user-guides/connect-another-wallet-address-to-identity)).

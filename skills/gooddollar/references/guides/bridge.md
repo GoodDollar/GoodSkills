@@ -26,11 +26,15 @@ Bridge with deterministic pre-checks: bridge support, allowance, amount, fee.
 ## Execution flow
 
 1. Resolve source bridge and token addresses for the network pair.
-2. Run bridge eligibility checks for sender and amount via `canBridge(from, amount)`.
+2. Run bridge eligibility checks for sender and amount via `canBridge(from, amount)` on the **source** bridge (same contract you call for `bridgeToWithLz` / `bridgeToWithAxelar`). This mirrors storage used when limits are enforced on **inbound** mint; outbound burn does not invoke `canBridge` inside `_bridgeTo`.
 3. Read allowance and approve bridge spender when required.
 4. Resolve transport mode (`LZ` or `AXELAR`) and estimate required native fee.
 5. Send bridge transaction with nonzero `msg.value` and explicit transport method.
 6. Return tx hash and normalized bridge parameters.
+
+## Axelar vs LayerZero on GoodDollar deployments
+
+LayerZero mappings are initialized for Ethereum, Celo, Fuse, and XDC in `initialize` / `upgrade` on `MessagePassingBridge`. The **Axelar** path is only usable where `toAxelarChainId(targetChainId)` returns a non-empty string; the on-chain pure function currently maps **1**, **5**, **42220**, and **44787** only. For **Fuse (122)** or **XDC (50)** targets, use **LZ** (`bridgeToWithLz`) unless governance ships a broader Axelar mapping.
 
 ## LayerZero fee and `estimateSendFee`
 

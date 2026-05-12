@@ -235,7 +235,7 @@ fromLzChainId:
 
 toAxelarChainId:
   notes:
-    - "Maps supported local chain ids into Axelar canonical chain-name strings."
+    - "Pure mapping in current implementation: chainId 1 -> 'Ethereum', 5 -> 'ethereum-2', 42220 and 44787 -> 'celo'; any other id returns empty string and outbound Axelar reverts UNSUPPORTED_CHAIN."
   mutability: pure
   inputs:
     - chainId: uint256

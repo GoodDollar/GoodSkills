@@ -13,7 +13,7 @@ Primary local ABI reference for MessagePassingBridge flow:
 
 ## Goal
 
-Bridge with deterministic pre-checks: bridge support, allowance, amount, cross-chain transport fee, and delivered amount after destination limits and protocol fee.
+Bridge with deterministic pre-checks: bridge support, allowance, amount, cross-chain transport fee, and delivered G$ after destination **amount** limits and protocol fee.
 
 ## Required inputs
 
@@ -26,7 +26,7 @@ Bridge with deterministic pre-checks: bridge support, allowance, amount, cross-c
 ## Execution flow
 
 1. Resolve source bridge and token addresses for the network pair.
-2. Run bridge eligibility checks for sender and amount via `canBridge(from, amount)` on the **source** bridge (same contract you call for `bridgeToWithLz` / `bridgeToWithAxelar`). This mirrors storage used when limits are enforced on **inbound** mint; outbound burn does not invoke `canBridge` inside `_bridgeTo`.
+2. Run bridge eligibility checks for sender and amount via `canBridge(from, amount)` on the **source** bridge (same contract you call for `bridgeToWithLz` / `bridgeToWithAxelar`). Outbound burn does not invoke `canBridge` inside `_bridgeTo`; destination mint still enforces **amount** limits (see **Bridge amount limit context**).
 3. Read allowance and approve bridge spender when required.
 4. Resolve transport mode (`LZ` or `AXELAR`) and estimate required native fee.
 5. Send bridge transaction with nonzero `msg.value` and explicit transport method.
@@ -44,6 +44,24 @@ When the message is executed on the **destination** chain, the bridge applies **
 
 **3. Optional OFT / LayerZero token-adapter path**  
 If the flow uses the GoodDollar OFT-style adapter instead of `MessagePassingBridge`, fee quoting follows **`quoteSend`** / **`MessagingFee`** on that contract; see `references/contracts/GoodDollarOFTAdapter.abi.yaml`.
+
+## Bridge amount limit context
+
+**Bridge limit** means **bridge amount limit**: policy on **how much G$** (token volume) may move—**`minAmount`**, per-transfer cap, per-account daily cap, and aggregate daily cap—plus **`onlyWhitelisted`**. It does **not** mean the cross-chain **native** transport fee (`msg.value`, **`LZ_FEE`**), and it does **not** mean the **destination mint fee** in **`bridgeFees`** (bps); those are covered under **Bridge fee context**.
+
+Amount caps and counters are **per bridge deployment**: read the **source** contract for outbound **amount** policy and usage meters tied to the burn, and the **destination** contract for **`_enforceLimits`** at inbound mint completion; do not assume identical **`bridgeLimits`** across chains.
+
+**1. Amount caps and usage meters**  
+**`bridgeLimits()`** exposes **`dailyLimit`**, **`txLimit`**, **`accountDailyLimit`**, **`minAmount`**, and **`onlyWhitelisted`**. Compare those caps to **`bridgeDailyLimit()`** (aggregate **`bridged24Hours`** and **`lastTransferReset`**) and **`accountsDailyLimit(account)`** (same fields per sender). Updates use **`setBridgeLimits`** (access per the ABI). Field-level notes and accessors live in `references/contracts/MessagePassingBridge.abi.yaml`.
+
+**2. Source preflight vs destination enforcement**  
+**`canBridge(from, amount)`** on the **source** is a view-only diagnostic for **that amount**: same policy family as amount limit checks, evaluated on the **raw** burn size (not the LayerZero fee normalization). Outbound **`_bridgeTo`** does **not** call **`canBridge`**; call it from the client if you want **`(false, reason)`** before signing instead of learning only from a revert after burn setup. When the message is executed on the **destination**, **`_enforceLimits`** is the hard gate for **amount** throttles and whitelist behavior at mint time.
+
+## Outbound pause, approved requests, and inbound source bridges
+
+These controls are separate from numeric **amount** caps; they still block or relax bridging and can surface as **`BRIDGE_LIMITS`** or inbound skips.
+
+**`pauseBridge`** sets **`isClosed`**; when closed, outbound flow reverts with **`BRIDGE_LIMITS('closed')`**. **`approvedRequests(requestId)`** on the destination lets **`_bridgeFrom`** skip standard **amount** limit enforcement for that completion when set. **`setDisabledBridges`** toggles **`disabledSourceBridges`** entries keyed by **`keccak256(abi.encode(sourceChainId, BridgeService))`**, controlling whether an inbound relay from that source is accepted before the rest of destination handling. See `references/contracts/MessagePassingBridge.abi.yaml`.
 
 ## Axelar vs LayerZero on GoodDollar deployments
 
@@ -164,3 +182,6 @@ console.log(
 - fee too low (`LZ_FEE` or underpriced Axelar fee): re-estimate and retry with user confirmation
 - approval or balance issue: return required delta
 - credited G$ on destination is reduced by **`bridgeFees`** (bps / min / max); that is independent of the source **`msg.value`** transport fee
+- **`canBridge`** false on source: return the **`reason`** string from the view call
+- **`BRIDGE_LIMITS(reason)`** custom error (see `references/contracts/MessagePassingBridge.abi.yaml` **errors**): **`reason`** labels the failing check (numeric **amount** limit, whitelist, **`closed`**, or other policy string from the implementation)
+- source preflight passed but destination still reverts: re-read **`bridgeLimits`** and daily counters for **amount** caps and **`onlyWhitelisted`**; check **`isClosed`**, **`approvedRequests`**, and **`disabledSourceBridges`** per **Outbound pause, approved requests, and inbound source bridges**; message delivery can cross a reset boundary or policy change

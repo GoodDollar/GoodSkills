@@ -127,7 +127,7 @@ Stop and **ask the user** whenever the task is underspecified or required facts 
 ## Execution rules
 
 1. Collect missing required inputs before sending transactions.
-2. Run pre-checks first (allowance, whitelist, quotes, bridge limits, peer wiring when using OFT paths).
+2. Run pre-checks first (allowance, whitelist, quotes, bridge **amount** limits, peer wiring when using OFT paths).
 3. If a pre-check fails, stop and return the exact corrective action.
 4. Return tx hash and key output values.
 5. Never fabricate addresses, amounts, or ABI behavior.
@@ -138,7 +138,7 @@ Stop and **ask the user** whenever the task is underspecified or required facts 
 - Claim: verify identity whitelist status before `claim()`.
 - Save or stake: verify balance and allowance before `stake()`.
 - Swap: fetch quote, apply slippage bounds, verify allowance; confirm Mento deployment for the active chain per GoodDocs.
-- Bridge (MessagePassingBridge): on the **source** chain approve G$ to the bridge; optionally preflight `canBridge(from, amount)` on that same contract (outbound `_bridgeTo` does not call it internally). For LZ use `estimateSendFee` with the **normalized** burn amount per `references/guides/bridge.md`, then `bridgeToWithLz` with nonzero `msg.value` for the **cross-chain transport** fee only (distinct from destination **`bridgeFees`** on minted G$; see **Bridge fee context** in that guide). Respect `isClosed`, `LZ_FEE`, `MISSING_FEE`, and `UNSUPPORTED_CHAIN`. **Destination** mint applies `_enforceLimits` and can still revert. Use **Axelar** only when `toAxelarChainId` returns a route (implementation maps 1, 5, 42220, 44787); for Fuse or XDC style targets prefer LZ unless mapping is extended on-chain.
+- Bridge (MessagePassingBridge): on the **source** chain approve G$ to the bridge; optionally preflight `canBridge(from, amount)` on that same contract (outbound `_bridgeTo` does not call it internally). For LZ use `estimateSendFee` with the **normalized** burn amount per `references/guides/bridge.md`, then `bridgeToWithLz` with nonzero `msg.value` for the **cross-chain transport** fee only (distinct from destination **`bridgeFees`** on minted G$; see **Bridge fee context** in that guide). Read **`bridgeLimits`** / daily trackers when debugging **amount** caps; see **Bridge amount limit context** in that guide. Respect `isClosed`, `LZ_FEE`, `MISSING_FEE`, and `UNSUPPORTED_CHAIN`. **Destination** mint applies `_enforceLimits` and can still revert. Use **Axelar** only when `toAxelarChainId` returns a route (implementation maps 1, 5, 42220, 44787); for Fuse or XDC style targets prefer LZ unless mapping is extended on-chain.
 - Bridge (OFT adapter path): verify peer wiring and `quoteSend` fee data.
 - Stream: confirm Celo (or documented Superfluid network) and correct Super Token and forwarder or host addresses.
 - Identity: resolve Identity from NameService; remember connected addresses do not multiply daily claims ([connect wallet guide](https://docs.gooddollar.org/user-guides/connect-another-wallet-address-to-identity)).
@@ -193,7 +193,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 - Identity or eligibility errors -> Identity and UBIScheme ABIs plus GoodDocs core contract pages.
 - Approval or transfer failures -> token approvals and balances; see integration guide for `transferAndCall` vs `approve` plus `transferFrom`.
 - Swap bound failures -> quote freshness and slippage settings.
-- MessagePassingBridge failures -> `canBridge`; transport `msg.value` (`MISSING_FEE`, `LZ_FEE`) vs destination protocol fee (`bridgeFees`, `feeRecipient`); correct `bridgeTo` arguments; [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
+- MessagePassingBridge failures -> `canBridge`; **`BRIDGE_LIMITS`** (amount caps, whitelist, **`closed`**, and related policy strings); transport `msg.value` (`MISSING_FEE`, `LZ_FEE`) vs destination protocol fee (`bridgeFees`, `feeRecipient`); correct `bridgeTo` arguments; [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
 - OFT path failures -> peer wiring and `quoteSend` fee data.
 - Stream failures -> CFA forwarder or host agreement calls, buffer and flow-rate limits per Superfluid docs linked from GoodDocs.
 - Faucet top-up failures -> `canTop`, `onlyAuthorized`, daily or weekly caps; `references/deep-researches/faucet-flows.md`.

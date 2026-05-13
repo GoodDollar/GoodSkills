@@ -1,6 +1,6 @@
 # Swap guide
 
-Use for buying or selling G$ through Mento-connected contracts on networks where they are deployed (see [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts): MentoBroker, MentoReserve, ExchangeProvider, ExpansionController).
+Use for buying or selling G$ through Mento-connected contracts on networks where they appear in [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (for example `MentoBroker`, `MentoReserve`, `MentoExchangeProvider`, `MentoExpansionController` keys under `production-celo` or `production-xdc`). GoodDocs describes Mento product behavior, not deployment addresses.
 
 ## GoodDocs alignment
 
@@ -20,7 +20,7 @@ Execute bounded swaps using broker quotes and correct allowances.
 
 ## Execution flow
 
-1. Confirm Mento Broker (and related) addresses for the chain from GoodDocs or deployment.json.
+1. Confirm Mento Broker (and related) addresses for the chain from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only.
 2. Fetch quote (`getAmountOut` or `getAmountIn` depending on direction and ABI).
 3. Apply slippage bounds.
 4. Approve the spent token for the broker when required.
@@ -78,6 +78,6 @@ console.log(
 
 ## Failure handling
 
-- No deployment on chain: direct the user to supported networks in core contracts.
+- No deployment on chain: direct the user to an environment that defines the needed keys in [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (for example `production-celo` with `MentoBroker`).
 - Stale quote or tight slippage: refresh quote or relax bounds with user consent.
 - Allowance or balance shortfall: report exact delta.

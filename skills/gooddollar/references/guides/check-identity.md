@@ -83,5 +83,5 @@ console.log(
 
 ## Failure handling
 
-- NameService cannot resolve `IDENTITY`: stop and fix deployment inputs using [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts).
+- NameService cannot resolve `IDENTITY`: stop and fix inputs using [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`Identity` / `NameService` for the target environment)—not GoodDocs tables.
 - Read failures: return the failing call and next step.

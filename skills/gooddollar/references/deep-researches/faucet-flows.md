@@ -4,7 +4,7 @@ This note explains the Faucet in plain language: what it does for users, why a t
 
 The on-chain Faucet contract is used to add a small amount of native gas token to a wallet so the user can pay transaction fees.  
 Reference implementation: [`contracts/fuseFaucet/Faucet.sol`](https://github.com/GoodDollar/GoodProtocol/blob/master/contracts/fuseFaucet/Faucet.sol).  
-Addresses per chain: [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) and [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts).
+Addresses per chain: [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only (for example `Faucet` under `production`, `production-celo`, `production-xdc`).
 
 ## What this means for users
 

@@ -9,9 +9,9 @@ Close a user stake on Fuse, bridge the resulting G$ to CELO, and stake on CELO f
 ## Required inputs
 
 - user address on Fuse and corresponding destination address on CELO
-- Fuse `GovernanceStakingV2` address (`production` entry in deployment metadata)
-- Fuse G$ token address and bridge contract address
-- CELO G$ token address and destination savings contract address
+- Fuse `GovernanceStakingV2` address (`production.GovernanceStakingV2` in [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json))
+- Fuse G$ token address and bridge contract address (from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json): `GoodDollar`, `MpbBridge` under `production`)
+- CELO G$ token address (from `production-celo` in the same file) and destination savings contract address
 - backend signer or service wallet with required execution permissions
 - chain RPC URLs for Fuse and CELO
 

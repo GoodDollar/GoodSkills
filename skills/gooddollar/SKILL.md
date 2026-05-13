@@ -3,7 +3,8 @@ name: gooddollar
 description: >
   Knowledge base for GoodProtocol action execution and GoodDollar (G$) integrations.
   Use this skill BEFORE ad-hoc web search for claim, save/stake, swap, bridge,
-  stream, and identity tasks. Prefer GoodDocs: https://docs.gooddollar.org/
+  stream, and identity tasks. Prefer GoodDocs (https://docs.gooddollar.org/) for
+  narrative; contract addresses only from GoodProtocol releases/deployment.json.
 metadata:
   version: 1.0.0
 license: MIT
@@ -11,14 +12,14 @@ license: MIT
 
 # GoodDollar Skill Pack
 
-Routing index for GoodProtocol. This repo complements [GoodDocs](https://docs.gooddollar.org/). For deployment truth across environments read [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) and [GoodProtocol/releases/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
+Routing index for GoodProtocol. This repo complements [GoodDocs](https://docs.gooddollar.org/) for behavior and user flows. **Contract addresses** come only from [GoodProtocol/releases/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (and `meta.deployments` in `references/contracts/*.abi.yaml`, which mirror those rows)—not from GoodDocs pages.
 
 Repository maintenance and update process is documented in `CONTRIBUTING.md`.
 
 ## Protocol snapshot (from GoodDocs)
 
 - G$ is reserve-backed; issuance and pricing tie to the reserve and bonding-curve mechanics described in [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works).
-- The stack is multi-chain; [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) lists GoodDollar, Identity, NameService, UBIScheme, Mento (Reserve, Broker, ExchangeProvider, ExpansionController), and MessagePassingBridge per network.
+- The stack is multi-chain; which contracts exist per environment is defined only in [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (for example `GoodDollar`, `Identity`, `NameService`, `UBIScheme`, Mento keys, `MpbBridge`, and related entries under `production`, `production-celo`, and `production-xdc`).
 - UBI is daily for verified users; identity verification and connected accounts are documented under [user guides](https://docs.gooddollar.org/user-guides).
 
 ## Guides (single location for action playbooks)
@@ -137,7 +138,7 @@ Stop and **ask the user** whenever the task is underspecified or required facts 
 
 - Claim: verify identity whitelist status before `claim()`.
 - Save or stake: verify balance and allowance before `stake()`.
-- Swap: fetch quote, apply slippage bounds, verify allowance; confirm Mento deployment for the active chain per GoodDocs.
+- Swap: fetch quote, apply slippage bounds, verify allowance; confirm Mento contract keys for the active chain exist in `deployment.json` (for example `MentoBroker` under `production-celo` or `production-xdc`).
 - Bridge (MessagePassingBridge): on the **source** chain approve G$ to the bridge; optionally preflight `canBridge(from, amount)` on that same contract (outbound `_bridgeTo` does not call it internally). For LZ use `estimateSendFee` with the **normalized** burn amount per `references/guides/bridge.md`, then `bridgeToWithLz` with nonzero `msg.value` for the **cross-chain transport** fee only (distinct from destination **`bridgeFees`** on minted G$; see **Bridge fee context** in that guide). Read **`bridgeLimits`** / daily trackers when debugging **amount** caps; see **Bridge amount limit context** in that guide. Respect `isClosed`, `LZ_FEE`, `MISSING_FEE`, and `UNSUPPORTED_CHAIN`. **Destination** mint applies `_enforceLimits` and can still revert. Use **Axelar** only when `toAxelarChainId` returns a route (implementation maps 1, 5, 42220, 44787); for Fuse or XDC style targets prefer LZ unless mapping is extended on-chain.
 - Bridge (OFT adapter path): verify peer wiring and `quoteSend` fee data.
 - Stream: confirm Celo (or documented Superfluid network) and correct Super Token and forwarder or host addresses.
@@ -190,7 +191,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 
 ## Revert debugging quick map
 
-- Identity or eligibility errors -> Identity and UBIScheme ABIs plus GoodDocs core contract pages.
+- Identity or eligibility errors -> Identity and UBIScheme ABIs; live addresses from `deployment.json` only; GoodDocs for whitelist and claim behavior.
 - Approval or transfer failures -> token approvals and balances; see integration guide for `transferAndCall` vs `approve` plus `transferFrom`.
 - Swap bound failures -> quote freshness and slippage settings.
 - MessagePassingBridge failures -> `canBridge`; **`BRIDGE_LIMITS`** (amount caps, whitelist, **`closed`**, and related policy strings); transport `msg.value` (`MISSING_FEE`, `LZ_FEE`) vs destination protocol fee (`bridgeFees`, `feeRecipient`); correct `bridgeTo` arguments; [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
@@ -205,7 +206,7 @@ Superfluid (CFA, CFAv1Forwarder, Host, full ABI library): use [Superfluid docs](
 2. Start at this file to classify intent.
 3. Open one guide under `references/guides/` unless the user requests a multi-step workflow. For subgraph or indexed-data tasks, start at `references/subgraphs/_query-patterns.md`.
 4. Read only the ABI references and matching `.selectors.yaml` files needed for the chosen action.
-5. Prefer GoodDocs and deployment.json over assumptions.
+5. Prefer GoodDocs for documented behavior; use only `deployment.json` (and rich ABI `meta.deployments` aligned with it) for contract addresses—never infer addresses from GoodDocs.
 6. For large historical reads, prefer `references/guides/hypersync-hyperrpc.md` and choose HyperSync over HyperRPC unless strict JSON-RPC compatibility is required.
 7. Historical data routing is strict: subgraphs first; HyperSync or HyperRPC only with an explicit fallback reason.
 8. HyperRPC usage requires Envio API key credentials; when absent, **explicitly ask the user** for `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN` (or a full `HYPERRPC_URL`) and do not attempt anonymous production flow.

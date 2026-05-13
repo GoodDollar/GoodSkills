@@ -48,7 +48,7 @@ If **no** Envio API token is available and you cannot complete the HyperSync pat
 - Keep subgraphs as first option for indexed protocol entities.
 - Use HyperSync/HyperRPC when subgraph coverage is missing, stale, or insufficient for bulk historical pulls.
 - When an agent chooses **HyperSync** as the best path and no Envio API token is available, follow **Agents: Envio API token when HyperSync is the best option** in this file and ask the user for `ENVIO_API_TOKEN` before proceeding.
-- Keep contract truth and addresses from GoodProtocol, deployment.json, and GoodDocs.
+- Keep contract addresses from [GoodProtocol/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only; use GoodDocs for product context, not for resolving contract addresses.
 - For implementation details (client setup, query structure, supported methods), follow the Envio docs links above directly.
 
 ## Prebuilt scripts (developers and local agents)

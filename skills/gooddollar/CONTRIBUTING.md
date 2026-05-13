@@ -32,7 +32,7 @@ Guide rules:
 
 - prefer explicit pre-checks before state-changing actions
 - include only one primary workflow per file
-- use real contract/address sources (`deployment.json`, NameService, GoodDocs)
+- use [GoodProtocol `releases/deployment.json`](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) as the **only** source for contract addresses (rich ABI `meta.deployments` mirrors those rows); use GoodDocs for behavior and UX, not for resolving addresses; use on-chain `NameService.getAddress` only when the deployment documents the string key
 - avoid implementation-deep theory; keep that in deep-research files
 
 After adding a guide:

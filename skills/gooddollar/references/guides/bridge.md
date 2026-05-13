@@ -9,7 +9,7 @@ Primary local ABI reference for MessagePassingBridge flow:
 ## GoodDocs alignment
 
 - User flow and high-level behavior: [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars).
-- Resolve supported bridge contracts per chain from [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) and [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
+- Resolve supported bridge contract addresses per chain from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only (for example `MpbBridge` under `production`, `production-celo`, `production-xdc`). Use [Bridge GoodDollars](https://docs.gooddollar.org/user-guides/bridge-gooddollars) for user-facing flow and troubleshooting, not for addresses.
 
 ## Goal
 

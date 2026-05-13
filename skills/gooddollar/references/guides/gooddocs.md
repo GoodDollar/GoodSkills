@@ -17,7 +17,7 @@ This is a **routing guide** (quick link map), not a deep protocol analysis note.
 
 ## Developers
 
-- [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) (addresses per chain; points to [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) for full lists)
+- [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts) (module overview; **do not** read contract addresses from GoodDocs—use [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only)
 - [Developer guides index](https://docs.gooddollar.org/for-developers/developer-guides)
 - [Integrate the G$ token](https://docs.gooddollar.org/for-developers/developer-guides/how-to-integrate-the-gusd-token) (ERC-677, ERC-777, decimals by chain, `transferAndCall`, fees)
 - [Use G$ streaming](https://docs.gooddollar.org/for-developers/developer-guides/use-gusd-streaming) (Superfluid on Celo, CFAv1Forwarder)

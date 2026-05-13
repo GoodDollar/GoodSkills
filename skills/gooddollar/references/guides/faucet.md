@@ -9,12 +9,12 @@ Run deterministic pre-checks and call `topWallet` only when eligibility and limi
 ## Required inputs
 
 - `rpcUrl`, chain configuration, signer
-- Faucet address for the chain (from `deployment.json` or NameService wiring)
+- Faucet address for the chain (from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) `Faucet` under the matching environment, or `NameService.getAddress` when the deployment documents the key)
 - target user address
 
 ## Execution flow
 
-1. Resolve Faucet deployment for the active chain.
+1. Resolve Faucet contract address for the active chain from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
 2. Run `canTop(user)` as preflight.
 3. Read `getToppingAmount(user)` and communicate expected top-up.
 4. If eligible, call `topWallet(user)`.

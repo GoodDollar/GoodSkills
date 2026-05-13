@@ -17,7 +17,7 @@ Operate deterministic clone-based swap routing with explicit chain/factory verif
 
 ## Execution flow
 
-1. Resolve factory for target chain from deployment metadata.
+1. Resolve factory for target chain from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`BuyGDFactory` / `BuyGDFactoryV2` under `production-celo`, or the key your deployment uses).
 2. Compute expected clone via `predict(owner)`.
 3. If clone not yet deployed for flow, call `create(owner)` or `createAndSwap(owner, minAmount)`.
 4. Execute stable -> G$ (on-ramp) or G$ -> stable (off-ramp) through clone path.

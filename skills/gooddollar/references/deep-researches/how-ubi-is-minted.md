@@ -1,6 +1,6 @@
 # How UBI is minted
 
-This document aligns agent explanations with [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works) and [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts).
+This document aligns agent explanations with [How GoodDollar works](https://docs.gooddollar.org/how-gooddollar-works) and GoodDocs component pages; **contract addresses** come only from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json).
 
 ## Monetary creation (protocol level)
 

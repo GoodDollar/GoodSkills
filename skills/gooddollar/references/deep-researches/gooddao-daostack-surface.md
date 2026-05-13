@@ -1,6 +1,6 @@
 # GoodDAO and DAOStack surface
 
-GoodProtocol’s on-chain **governance shell** is largely **DAOStack-shaped**: an **Avatar** holds protocol assets and reputation context; a **Controller** registers **schemes** and routes privileged calls. GoodDocs lists **DAO contracts** under [Core contracts](https://docs.gooddollar.org/for-developers/core-contracts); implementation follows [DAOStack Arc](https://github.com/daostack/arc) patterns.
+GoodProtocol’s on-chain **governance shell** is largely **DAOStack-shaped**: an **Avatar** holds protocol assets and reputation context; a **Controller** registers **schemes** and routes privileged calls. GoodDocs summarizes DAO-facing roles; **Avatar**, **Controller**, and other DAO contract addresses live only in [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json). Implementation follows [DAOStack Arc](https://github.com/daostack/arc) patterns.
 
 ## Core interfaces (GoodProtocol)
 
@@ -33,5 +33,5 @@ GoodProtocol’s on-chain **governance shell** is largely **DAOStack-shaped**: a
 
 ## References
 
-- [Core contracts — DAO contracts](https://docs.gooddollar.org/for-developers/core-contracts) (per-chain addresses).
+- [Core contracts — DAO contracts](https://docs.gooddollar.org/for-developers/core-contracts) (narrative only; addresses from [deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only)
 - DAOStack Arc controller and avatar concepts in the upstream repo linked from GoodDocs.

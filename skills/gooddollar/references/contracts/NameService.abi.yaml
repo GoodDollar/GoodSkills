@@ -18,14 +18,17 @@ meta:
         NameService:
           networkId: 122
           address: "0xec6dcE387B1616a0c44fF2E4fA9E90e53Cf14eb0"
+          creationBlock: 15740314
       production-celo:
         NameService:
           networkId: 42220
           address: "0x0F5dB7a64A6a64052693676CA898EC7F7A94FF4e"
+          creationBlock: 17237962
       production-xdc:
         NameService:
           networkId: 50
           address: "0x1e5154Bf5e31FF56051bbd45958b879Fb7a290FE"
+          creationBlock: 95143608
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/nameservice
     - https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json

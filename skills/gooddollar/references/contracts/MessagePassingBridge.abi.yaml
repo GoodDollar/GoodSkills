@@ -14,14 +14,17 @@ meta:
         MpbBridge:
           networkId: 122
           address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
+          creationBlock: 25464921
       production-celo:
         MpbBridge:
           networkId: 42220
           address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
+          creationBlock: 21473545
       production-xdc:
         MpbBridge:
           networkId: 50
           address: "0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5"
+          creationBlock: 95254417
   related:
     - references/guides/bridge.md
 

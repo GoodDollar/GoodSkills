@@ -41,6 +41,9 @@ meta:
       eth-sepolia: "0xcfA132E353cB4E398080B9700609bb008eceB125"
       optimism-sepolia: "0xcfA132E353cB4E398080B9700609bb008eceB125"
       scroll-sepolia: "0xcfA132E353cB4E398080B9700609bb008eceB125"
+  deploymentCreationBlocks:
+    mainnet:
+      celo-mainnet: 17404156
 
 # == Glossary ==
 # flowrate          — token transfer rate in wad/second (int96)

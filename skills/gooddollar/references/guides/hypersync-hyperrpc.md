@@ -51,6 +51,10 @@ If **no** Envio API token is available and you cannot complete the HyperSync pat
 - Keep contract addresses from [GoodProtocol/deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) only; use GoodDocs for product context, not for resolving contract addresses.
 - For implementation details (client setup, query structure, supported methods), follow the Envio docs links above directly.
 
+## From block for historical fetches
+
+For **`eth_getLogs`**, HyperRPC, and HyperSync range queries, the lower bound is **`fromBlock`** (or the client’s equivalent). Prefer the deployment’s **`creationBlock`** from the matching row in `references/contracts/*.abi.yaml` (or **`meta.deploymentCreationBlocks`** where deployments are plain address strings) so scans do not start at genesis when you only need post-deploy history. Field placement for **`creationBlock`** is defined in `references/contracts/_rich-abi-yaml-format.md`. If you cannot determine the creation block, **`fromBlock` 0** is valid.
+
 ## Prebuilt scripts (developers and local agents)
 
 These scripts avoid rediscovering HyperRPC wiring on every task. They require **Node.js 18 or newer** (global `fetch`). Paths like `scripts/...` are relative to the **GoodSkills repository root** (the directory that contains both `skills/` and `scripts/`), not relative to `skills/gooddollar/` alone.
@@ -60,13 +64,11 @@ These scripts avoid rediscovering HyperRPC wiring on every task. They require **
 - Script: `scripts/fetch-whitelist-events-hyperrpc.mjs`
 - Default `EVENT_TOPIC0` matches `WhitelistedAdded(address)` on `IdentityV4`; override `EVENT_TOPIC0` for other events.
 - Production Celo defaults: `CONTRACT_ADDRESS` defaults to `Identity` from `production-celo` in [GoodProtocol deployment.json](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`0xC361A6E67822a0EDc17D899227dd9FC50BD62F42`). If `HYPERRPC_URL` is unset, the script builds `https://celo.rpc.hypersync.xyz/<token>` from `HYPERRPC_API_TOKEN` or `ENVIO_API_TOKEN`.
-- Optional env: `HYPERRPC_URL` (overrides token-based default), `CONTRACT_ADDRESS`, `LIMIT` (default `500`), `STEP` (default `2000`), `FROM_BLOCK` (default `0`), `TO_BLOCK` (default `latest`).
-- For event pulls, set `FROM_BLOCK` to the contract creation block (deployment block) instead of `0` to avoid unnecessary scan range and reduce latency.
+- Optional env: `HYPERRPC_URL` (overrides token-based default), `CONTRACT_ADDRESS`, `LIMIT` (default `500`), `STEP` (default `2000`), `FROM_BLOCK` (decimal; omit to read **`creationBlock`** for `CONTRACT_ADDRESS` from `ABI_PATH` or the default `skills/gooddollar/references/contracts/IdentityV4.abi.yaml`), `ABI_PATH`, `TO_BLOCK` (default `latest`). **`fromBlock`** behavior is described in **From block for historical fetches** above.
 
 ```bash
 cd /path/to/GoodSkills
 export HYPERRPC_API_TOKEN='<api-token>'
-export FROM_BLOCK='<contract-creation-block>'
 node scripts/fetch-whitelist-events-hyperrpc.mjs
 ```
 
@@ -95,12 +97,14 @@ const identity = "0x...";
 const whitelistedAddedTopic0 =
   "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f";
 
-const fromBlock = 0;
+const fromBlock = 17237952;
 const toBlock = await client.getHeight();
 
 const query = presetQueryLogsOfEvent(identity, whitelistedAddedTopic0, fromBlock, toBlock);
 const res = await client.get(query);
 console.log(res.data.logs.length);
 ```
+
+The example **`fromBlock`** matches **`creationBlock`** for production Celo Identity in `skills/gooddollar/references/contracts/IdentityV4.abi.yaml`; see **From block for historical fetches** above.
 
 Full API and streaming patterns: [HyperSync clients](https://docs.envio.dev/docs/HyperSync/hypersync-clients) and the package README for `@envio-dev/hypersync-client`.

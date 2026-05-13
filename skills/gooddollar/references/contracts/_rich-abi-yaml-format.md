@@ -6,7 +6,8 @@ Each YAML is a self-contained contract reference. Here's how to parse them.
 
 ```
 # Header comment — contract name, description, key notes
-meta:             # name, version, source, implements, inherits, deployments
+meta:             # name, version, source, implements, inherits, deployments,
+                  # deploymentCreationBlocks (optional), notes
 # == Section ==   # Grouped functions (these are the core content)
 events:           # All events the contract emits
 errors:           # Complete error index
@@ -56,6 +57,10 @@ applicable.
   (implementation, interface, base — filenames are self-documenting).
 - **`meta.deployments`** has per-network addresses split into `mainnet` and
   `testnet` subgroups.
+- **`creationBlock`**: decimal block where that **`address`** first has code;
+  put it on the same object as **`networkId`** / **`address`**, immediately after **`address`**.
+- **`meta.deploymentCreationBlocks`**: same shape as **`meta.deployments`**, for
+  deployments stored as plain address strings; leaves are decimal block numbers.
 
 ## Events section
 

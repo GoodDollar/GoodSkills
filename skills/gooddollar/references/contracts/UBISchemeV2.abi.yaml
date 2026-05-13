@@ -17,14 +17,17 @@ meta:
         UBIScheme:
           networkId: 122
           address: "0xd253A5203817225e9768C05E5996d642fb96bA86"
+          creationBlock: 15747401
       production-celo:
         UBIScheme:
           networkId: 42220
           address: "0x43d72Ff17701B2DA814620735C39C620Ce0ea4A1"
+          creationBlock: 18006679
       production-xdc:
         UBIScheme:
           networkId: 50
           address: "0x22867567E2D80f2049200E25C6F31CB6Ec2F0faf"
+          creationBlock: 95249624
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/ubischeme
     - references/guides/claim.md

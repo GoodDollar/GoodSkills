@@ -23,6 +23,7 @@ meta:
       xdc-mainnet:
         networkId: 50
         address: "0x3BeaaC603b445C7E8AdC46B3867404e1Bde9E047"
+        creationBlock: 101785233
   related:
     - references/guides/migrate-fuse-staking-to-celo-savings.md
     - references/deep-researches/fuse-to-celo-staking-migration.md

@@ -35,6 +35,9 @@ meta:
       eth-sepolia: "0x6836F23d6171D74Ef62FcF776655aBcD2bcd62Ef"
       optimism-sepolia: "0x8a3170AdbC67233196371226141736E4151e7C26"
       scroll-sepolia: "0xbc46B4Aa41c055578306820013d4B65fff42711E"
+  deploymentCreationBlocks:
+    mainnet:
+      celo-mainnet: 16393492
 
 # == Abbreviations ==
 # 3Ps  — Three Periods: liquidation, patrician, and pleb (solvency model)

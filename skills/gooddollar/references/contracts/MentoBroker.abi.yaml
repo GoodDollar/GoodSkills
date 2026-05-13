@@ -20,10 +20,12 @@ meta:
         MentoBroker:
           networkId: 42220
           address: "0x88de45906D4F5a57315c133620cfa484cB297541"
+          creationBlock: 31415857
       production-xdc:
         MentoBroker:
           networkId: 50
           address: "0x88de45906D4F5a57315c133620cfa484cB297541"
+          creationBlock: 100091095
   related:
     - https://docs.gooddollar.org/for-developers/core-contracts/mentobroker
     - references/guides/swap.md

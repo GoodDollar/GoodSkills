@@ -1,4 +1,18 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 const env = process.env;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DEFAULT_ABI_PATH = path.join(
+  __dirname,
+  "..",
+  "skills",
+  "gooddollar",
+  "references",
+  "contracts",
+  "IdentityV4.abi.yaml",
+);
 
 const PRODUCTION_CELO_IDENTITY = "0xC361A6E67822a0EDc17D899227dd9FC50BD62F42";
 const PRODUCTION_CELO_HYPERRPC_BASE = "https://celo.rpc.hypersync.xyz";
@@ -14,7 +28,41 @@ const EVENT_TOPIC0 =
   env.EVENT_TOPIC0 ||
   "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f";
 const TO_BLOCK_INPUT = env.TO_BLOCK || "latest";
-const FROM_BLOCK_INPUT = env.FROM_BLOCK ?? "0";
+
+const readCreationBlockAfterAddress = (text, targetAddress) => {
+  const want = targetAddress.toLowerCase();
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/^\s*address:\s*"([^"]+)"/i);
+    if (!m || m[1].toLowerCase() !== want) continue;
+    for (let j = i + 1; j < Math.min(i + 8, lines.length); j++) {
+      const cm = lines[j].match(/^\s*creationBlock:\s*(\d+)\s*$/);
+      if (cm) return Number(cm[1]);
+    }
+  }
+  return null;
+};
+
+const creationBlockFromAbiFile = (filePath, contractAddress) => {
+  if (!filePath || !fs.existsSync(filePath)) return null;
+  const text = fs.readFileSync(filePath, "utf8");
+  return readCreationBlockAfterAddress(text, contractAddress);
+};
+
+const resolveFromBlockFloor = () => {
+  if (env.FROM_BLOCK !== undefined && env.FROM_BLOCK !== "") {
+    return Number.parseInt(env.FROM_BLOCK, 10);
+  }
+  const abiPath =
+    env.ABI_PATH && env.ABI_PATH !== ""
+      ? path.isAbsolute(env.ABI_PATH)
+        ? env.ABI_PATH
+        : path.resolve(process.cwd(), env.ABI_PATH)
+      : DEFAULT_ABI_PATH;
+  return creationBlockFromAbiFile(abiPath, CONTRACT_ADDRESS) ?? 0;
+};
+
+const FROM_BLOCK_FLOOR = resolveFromBlockFloor();
 
 if (!HYPERRPC_URL) {
   throw new Error(
@@ -26,6 +74,9 @@ if (!Number.isFinite(LIMIT) || LIMIT <= 0) {
 }
 if (!Number.isFinite(STEP) || STEP <= 0) {
   throw new Error("STEP must be a positive number");
+}
+if (!Number.isFinite(FROM_BLOCK_FLOOR) || FROM_BLOCK_FLOOR < 0) {
+  throw new Error("FROM_BLOCK must be a non-negative decimal number");
 }
 
 const toHex = (n) => `0x${n.toString(16)}`;
@@ -75,11 +126,7 @@ const run = async () => {
     throw new Error("TO_BLOCK must be 'latest' or a non-negative decimal number");
   }
 
-  const floor =
-    FROM_BLOCK_INPUT == null ? 0 : Number.parseInt(FROM_BLOCK_INPUT, 10);
-  if (!Number.isFinite(floor) || floor < 0) {
-    throw new Error("FROM_BLOCK must be a non-negative decimal number");
-  }
+  const floor = FROM_BLOCK_FLOOR;
 
   const toBlock = Math.min(explicitTo, latest);
   const out = [];

@@ -23,6 +23,7 @@ meta:
         GovernanceStakingV2:
           networkId: 122
           address: "0xB7C3e738224625289C573c54d402E9Be46205546"
+          creationBlock: 15956809
   related:
     - references/guides/migrate-fuse-staking-to-celo-savings.md
     - references/deep-researches/fuse-to-celo-staking-migration.md

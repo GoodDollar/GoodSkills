@@ -62,6 +62,7 @@ For each contract:
 - create or update `Foo.abi.yaml`
 - generate or refresh `Foo.selectors.yaml`
 - include function-level notes for non-obvious behavior
+- when `meta.deployments` lists concrete addresses, add **`creationBlock`** next to each **`address`** (placement: `references/contracts/_rich-abi-yaml-format.md`; using it as **`fromBlock`** for log or HyperSync fetches: `references/guides/hypersync-hyperrpc.md`)
 
 Minimum ABI documentation quality:
 

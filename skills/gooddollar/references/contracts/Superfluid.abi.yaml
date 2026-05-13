@@ -34,6 +34,9 @@ meta:
       eth-sepolia: "0x109412E3C84f0539b43d39dB691B08c90f58dC7c"
       optimism-sepolia: "0xd399e2Fb5f4cf3722a11F65b88FAB6B2B8621005"
       scroll-sepolia: "0x42b05a6016B9eED232E13fd56a8F0725693DBF8e"
+  deploymentCreationBlocks:
+    mainnet:
+      celo-mainnet: 16393469
 
 # == Abbreviations ==
 # ctx  — context (Superfluid call context bytes)

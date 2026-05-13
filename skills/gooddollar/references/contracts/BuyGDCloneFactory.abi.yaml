@@ -12,9 +12,11 @@ meta:
         BuyGDFactoryV2:
           networkId: 42220
           address: "0x1F60C4C7037C6766924A43666B781ED1479587a2"
+          creationBlock: 22909812
         BuyGDFactory:
           networkId: 42220
           address: "0x00e533B7d6255D05b7f15034B1c989c21F51b91C"
+          creationBlock: 21006324
   related:
     - references/deep-researches/on-off-ramp-service.md
     - references/guides/on-off-ramp.md

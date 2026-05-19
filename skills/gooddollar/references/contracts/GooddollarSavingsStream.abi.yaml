@@ -26,8 +26,8 @@ meta:
           address: "0x059ee811414230d1Fb157878D2b491240F4D8d3B"
           creationBlock: 66685884
   related:
+    - https://github.com/Ubeswap/gooddollar-contracts/blob/main/README.md
     - https://celoscan.io/address/0x059ee811414230d1Fb157878D2b491240F4D8d3B
-    - references/contracts/GooddollarSavings.abi.yaml
     - references/contracts/SuperToken.abi.yaml
     - references/guides/migrate-fuse-staking-to-celo-savings.md
     - references/deep-researches/fuse-to-celo-staking-migration.md

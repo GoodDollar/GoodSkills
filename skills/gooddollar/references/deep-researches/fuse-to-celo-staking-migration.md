@@ -34,6 +34,5 @@ Ubeswap `GooddollarSavingsStream` on Celo supports `stakeFor(amount, recipient)`
 - Fuse staking family (GoodProtocol): [`GovernanceStaking.sol`](https://github.com/GoodDollar/GoodProtocol/blob/master/contracts/governance/GovernanceStaking.sol)
 - Fuse deployment mapping: [`deployment.json`](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`production.GovernanceStakingV2`)
 - Celo savings (Ubeswap): [`GooddollarSavingsStream.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavingsStream.sol)
-- Prior accrual implementation in repo (not a tracked production deployment here): [`GooddollarSavings.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol)
 - Ubeswap contracts repository: [Ubeswap/gooddollar-contracts](https://github.com/Ubeswap/gooddollar-contracts)
 - Bridge normalization for LZ quotes: [`BridgeHelperLibrary.normalizeFromTokenTo18Decimals`](https://github.com/GoodDollar/GoodBridge/blob/master/packages/bridge-contracts/contracts/messagePassingBridge/BridgeHelperLibrary.sol) (off-chain LayerZero fee estimation must match this; `canBridge` and `bridgeToWithLz` use the raw burn amount on the source chain)

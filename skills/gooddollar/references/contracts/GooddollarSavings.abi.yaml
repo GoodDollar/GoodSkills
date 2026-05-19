@@ -1,4 +1,4 @@
-# GooddollarSavings (Ubeswap) — stake G$ and accrue G$ rewards with daily-rate and APR cap controls
+# GooddollarSavings (Ubeswap) — stake G$ with rewardPerToken accrual
 
 meta:
   name: GooddollarSavings
@@ -11,22 +11,13 @@ meta:
     - Ownable
     - ReentrancyGuard
   note: >
-    Savings contract used for destination-chain staking. Principal is plain staked G$ in
-    internal `_balances` (not an ERC20 staking share). Reward accrual uses `updateReward` each call:
-    moves value from `remainingRewards` into `_totalSupply`-scaled `rewardPerTokenStored` and
-    `totalUnclaimedRewards`, then snapshots `earned` per user. Pool-wide payout pace is `rewardRate`
-    (per second); per-staker APR is optionally capped via `maxRewardRatePerToken`. Accrual stops when
-    `_totalSupply == 0` or `remainingRewards == 0`.
-    This is the destination savings contract interface in Fuse->CELO migration flows.
-  deployments:
-    mainnet:
-      xdc-mainnet:
-        networkId: 50
-        address: "0x3BeaaC603b445C7E8AdC46B3867404e1Bde9E047"
-        creationBlock: 101785233
+    Plain staked G$ in `_balances`; rewards via `rewardPerTokenStored` / `earned` (not Superfluid).
+    Rich ABI for the Solidity contract in Ubeswap gooddollar-contracts; no production deployment
+    is tracked in this skill pack. Celo mainnet savings is GooddollarSavingsStream — see
+    GooddollarSavingsStream.abi.yaml.
   related:
-    - references/guides/migrate-fuse-staking-to-celo-savings.md
-    - references/deep-researches/fuse-to-celo-staking-migration.md
+    - https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol
+    - references/contracts/GooddollarSavingsStream.abi.yaml
 
 rewardPerToken:
   notes:

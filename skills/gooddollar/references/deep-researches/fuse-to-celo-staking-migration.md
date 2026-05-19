@@ -1,6 +1,6 @@
 # Why Fuse to CELO staking migration uses a staged backend flow
 
-This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction. In this context, Fuse `GovernanceStakingV2` is the old/source staking contract and `GooddollarSavings` is the destination staking contract interface.
+This explains why the migration is split into allowance detection, unstake, bridge, and destination re-stake instead of a single transaction. In this context, Fuse `GovernanceStakingV2` is the old/source staking contract and Celo **`GooddollarSavingsStream`** is the destination staking contract ([source](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavingsStream.sol), [0x059ee811414230d1Fb157878D2b491240F4D8d3B](https://celoscan.io/address/0x059ee811414230d1Fb157878D2b491240F4D8d3B)).
 
 ## Why this cannot be one-chain atomic
 
@@ -20,7 +20,7 @@ Bridge transfers are eventually consistent across chains. The destination stake 
 
 ## Why destination uses `stakeFor`
 
-Ubeswap `GooddollarSavings` supports `stakeFor(amount, recipient)`, which allows the backend execution wallet to stake on behalf of the user after bridge finalization. This fits migration operations where custody is temporary during the transfer window.
+Ubeswap `GooddollarSavingsStream` on Celo supports `stakeFor(amount, recipient)`, which allows the backend execution wallet to stake on behalf of the user after bridge finalization. This fits migration operations where custody is temporary during the transfer window.
 
 ## Main operational risks
 
@@ -33,6 +33,7 @@ Ubeswap `GooddollarSavings` supports `stakeFor(amount, recipient)`, which allows
 
 - Fuse staking family (GoodProtocol): [`GovernanceStaking.sol`](https://github.com/GoodDollar/GoodProtocol/blob/master/contracts/governance/GovernanceStaking.sol)
 - Fuse deployment mapping: [`deployment.json`](https://github.com/GoodDollar/GoodProtocol/blob/master/releases/deployment.json) (`production.GovernanceStakingV2`)
-- Destination savings implementation (Ubeswap): [`GooddollarSavings.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol)
+- Celo savings (Ubeswap): [`GooddollarSavingsStream.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavingsStream.sol)
+- Prior accrual implementation in repo (not a tracked production deployment here): [`GooddollarSavings.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavings.sol)
 - Ubeswap contracts repository: [Ubeswap/gooddollar-contracts](https://github.com/Ubeswap/gooddollar-contracts)
 - Bridge normalization for LZ quotes: [`BridgeHelperLibrary.normalizeFromTokenTo18Decimals`](https://github.com/GoodDollar/GoodBridge/blob/master/packages/bridge-contracts/contracts/messagePassingBridge/BridgeHelperLibrary.sol) (off-chain LayerZero fee estimation must match this; `canBridge` and `bridgeToWithLz` use the raw burn amount on the source chain)

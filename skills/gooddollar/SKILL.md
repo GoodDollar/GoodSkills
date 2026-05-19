@@ -167,7 +167,8 @@ GoodDollar / Mento:
 - `references/contracts/BuyGDCloneFactory.abi.yaml`
 - `references/contracts/BuyGDCloneV2.abi.yaml`
 - `references/contracts/GovernanceStakingV2.abi.yaml`
-- `references/contracts/GooddollarSavings.abi.yaml`
+- `references/contracts/GooddollarSavings.abi.yaml` (Ubeswap rewardPerToken savings — source ABI only)
+- `references/contracts/GooddollarSavingsStream.abi.yaml` (Ubeswap Superfluid stream savings; Celo deployment)
 - `references/contracts/UBISchemeV2.abi.yaml`
 - `references/contracts/MentoBroker.abi.yaml`
 - `references/contracts/MessagePassingBridge.abi.yaml`

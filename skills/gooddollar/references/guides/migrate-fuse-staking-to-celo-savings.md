@@ -1,6 +1,6 @@
 # Fuse to CELO staking migration guide
 
-Use when the user wants to migrate an existing Fuse governance stake into a CELO destination savings flow. In this flow, Fuse `GovernanceStakingV2` is the old staking contract (source) and `GooddollarSavings` is the destination savings contract interface.
+Use when the user wants to migrate an existing Fuse governance stake into a CELO destination savings flow. In this flow, Fuse `GovernanceStakingV2` is the old staking contract (source) and **`GooddollarSavingsStream`** on Celo is the destination savings contract ([`GooddollarSavingsStream.sol`](https://github.com/Ubeswap/gooddollar-contracts/blob/main/contracts/GooddollarSavingsStream.sol), [CeloScan](https://celoscan.io/address/0x059ee811414230d1Fb157878D2b491240F4D8d3B)).
 
 ## Goal
 
@@ -23,7 +23,7 @@ Close a user stake on Fuse, bridge the resulting G$ to CELO, and stake on CELO f
 | Governance staking (previous) | Fuse (`production`, `networkId: 122`) | `deployment.json` -> `production.GovernanceStaking` | `0xFAF457Fb4A978Be059506F6CD41f9B30fCa753b0` |
 | Fuse G$ token | Fuse (`production`, `networkId: 122`) | `deployment.json` -> `production.GoodDollar` | `0x495d133B938596C9984d462F007B676bDc57eCEC` |
 | Fuse bridge | Fuse (`production`, `networkId: 122`) | `deployment.json` -> `production.MpbBridge` | `0xa3247276DbCC76Dd7705273f766eB3E8a5ecF4a5` |
-| Destination savings | CELO (`networkId: 42220`) | runtime deployment config | `process.env.CELO_SAVINGS` |
+| Destination savings | CELO (`networkId: 42220`) | [CeloScan](https://celoscan.io/address/0x059ee811414230d1Fb157878D2b491240F4D8d3B) / `GooddollarSavingsStream` | `0x059ee811414230d1Fb157878D2b491240F4D8d3B` (`process.env.CELO_SAVINGS`) |
 
 Canonical sources:
 
@@ -50,7 +50,7 @@ On the Fuse `MpbBridge` (`MessagePassingBridge`), `canBridge(from, amount)` and 
 5. Bridge G$ from Fuse to CELO using the configured bridge path and track the transfer id or tx hash pair.
 6. Wait for destination finalization on CELO and verify credited G$ balance at the backend execution wallet.
 7. Approve destination savings contract to spend migrated G$ amount.
-8. Stake for the user on CELO with `stakeFor(amount, recipient)` on `GooddollarSavings`.
+8. Stake for the user on CELO with `stakeFor(amount, recipient)` on `GooddollarSavingsStream` (G$ native Super Token; approve the savings contract, not only ERC20 GoodDollar from `deployment.json` if your wallet holds the Super Token).
 9. Return a migration result with both chain tx hashes and final CELO staked amount.
 
 ## Deterministic snippet
